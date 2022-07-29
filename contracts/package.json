@@ -1,0 +1,19 @@
+{
+  "name": "crypto-box",
+  "version": "1.0.0",
+  "scripts": {
+    "compile": "truffle compile",
+    "test": "truffle test --network=local",
+    "console": "truffle console --network=local",
+    "migrate": "truffle migrate --network=local",
+    "test:mumbai": "truffle test --network=mumbai",
+    "migrate:mumbai": "truffle migrate --network=mumbai",
+    "console:mumbai": "truffle console --network=mumbai"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.18.9",
+    "@truffle/hdwallet-provider": "^2.0.12",
+    "dotenv": "^16.0.1"
+  }
+}
