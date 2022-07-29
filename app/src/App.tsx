@@ -1,19 +1,9 @@
-import { createRef, useEffect } from 'react';
-import './App.css'
-import { setup } from './utils/pixi'
+import React from "react";
+
+import "./App.css";
 
 function App() {
-  const appRef = createRef<HTMLDivElement>();
-
-  useEffect(() => {
-    if (!appRef.current) return
-    setup(appRef);
-  }, [])
-
-  return (
-    <div className="App" ref={appRef}>
-    </div>
-  )
+  return <div className="App"></div>;
 }
 
-export default App
+export default App;
