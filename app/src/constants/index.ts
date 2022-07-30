@@ -1,19 +1,19 @@
 import Bridge1 from "@assets/game/Bridge1.svg";
 import Bridge2 from "@assets/game/Bridge2.svg";
 import Bridge3 from "@assets/game/Bridge3.svg";
-import DApp11 from "@assets/game/DApp1-1.svg";
-import DApp12 from "@assets/game/DApp1-2.svg";
-import DApp13 from "@assets/game/DApp1-3.svg";
-import DApp21 from "@assets/game/DApp2-1.svg";
-import DApp22 from "@assets/game/DApp2-2.svg";
-import DApp23 from "@assets/game/DApp2-3.svg";
-import DApp31 from "@assets/game/DApp3-1.svg";
-import DApp32 from "@assets/game/DApp3-2.svg";
-import DApp33 from "@assets/game/DApp3-3.svg";
+import Dao1 from "@assets/game/Dao1.svg";
+import Dao2 from "@assets/game/Dao2.svg";
+import Dao3 from "@assets/game/Dao3.svg";
+import Dex1 from "@assets/game/Dex1.svg";
+import Dex2 from "@assets/game/Dex2.svg";
+import Dex3 from "@assets/game/Dex3.svg";
 import Network1 from "@assets/game/Network1.svg";
 import Node1 from "@assets/game/Node1.svg";
 import Node2 from "@assets/game/Node2.svg";
 import Node3 from "@assets/game/Node3.svg";
+import Staking1 from "@assets/game/Staking1.svg";
+import Staking2 from "@assets/game/Staking2.svg";
+import Staking3 from "@assets/game/Staking3.svg";
 
 export const GAME_OBJECTS = {
   network: {
@@ -25,19 +25,19 @@ export const GAME_OBJECTS = {
     3: Node3,
   },
   dex: {
-    1: DApp11,
-    2: DApp12,
-    3: DApp13,
+    1: Dex1,
+    2: Dex2,
+    3: Dex3,
   },
   staking: {
-    1: DApp21,
-    2: DApp22,
-    3: DApp23,
+    1: Staking1,
+    2: Staking2,
+    3: Staking3,
   },
   dao: {
-    1: DApp31,
-    2: DApp32,
-    3: DApp33,
+    1: Dao1,
+    2: Dao2,
+    3: Dao3,
   },
   bridge: {
     1: Bridge1,
