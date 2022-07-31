@@ -21,7 +21,6 @@ import Staking3 from "@assets/game/Staking3.svg";
 interface ObjectConfig {
   x: number;
   y: number;
-  scale: number;
 }
 
 enum GameObject {
@@ -50,17 +49,24 @@ export const setup = (ref: RefObject<HTMLDivElement>) => {
   const network = setupObject(createSprite(GameObject.Network, 1), {
     x: APP.renderer.width / 2,
     y: APP.renderer.height / 2,
-    scale: 0.3,
   });
-  const node = Node(1);
+  const node = new Node({ level: 1 });
 
-  node.x = APP.renderer.width / 2 - 220;
-  node.y = APP.renderer.height / 2;
+  node.add(createSprite(GameObject.Dao, 1));
+
+  node.container.x = APP.renderer.width / 2 - 220;
+  node.container.y = APP.renderer.height / 2;
+
+  const container = new PIXI.Container();
 
   // Add the node to the scene we are building
-  APP.stage.addChild(network);
+  container.addChild(network);
 
-  APP.stage.addChild(node);
+  container.addChild(node.container);
+
+  container.scale.set(1, 1);
+
+  APP.stage.addChild(container);
 
   // // Listen for frame updates
   // APP.ticker.add(() => {
@@ -119,11 +125,9 @@ const createSprite = (gameObject: GameObject, level: Level): PIXI.Sprite => {
   }
 };
 
-const setupObject = (sprite: PIXI.Sprite, { x, y, scale }: ObjectConfig) => {
+const setupObject = (sprite: PIXI.Sprite, { x, y }: ObjectConfig) => {
   sprite.x = x;
   sprite.y = y;
-
-  sprite.scale.set(scale, scale);
 
   sprite.anchor.x = 0.5;
   sprite.anchor.y = 0.5;
@@ -133,32 +137,96 @@ const setupObject = (sprite: PIXI.Sprite, { x, y, scale }: ObjectConfig) => {
   return sprite;
 };
 
-const Node = (level: Level) => {
-  const container = new PIXI.Container();
+// const Node = (level: Level) => {
+//   const container = new PIXI.Container();
+//   container.sortableChildren = true;
 
-  const nodeObject = setupObject(createSprite(GameObject.Node, level), {
-    x: 0,
-    y: 0,
-    scale: 0.3,
-  });
+//   const nodeObject = setupObject(createSprite(GameObject.Node, level), {
+//     x: 0,
+//     y: 0,
+//   });
+//   nodeObject.zIndex = 2;
 
-  const dAppObject1 = setupObject(createSprite(GameObject.Dao, 1), {
-    x: -70,
-    y: 0,
-    scale: 0.3,
-  });
-  const dAppObject2 = setupObject(createSprite(GameObject.Dex, 2), {
-    x: 0,
-    y: 70,
-    scale: 0.3,
-  });
-  const dAppObject3 = setupObject(createSprite(GameObject.Staking, 3), {
-    x: 0,
-    y: -70,
-    scale: 0.3,
-  });
+//   const line = new PIXI.Graphics();
 
-  container.addChild(nodeObject, dAppObject1, dAppObject2, dAppObject3);
+//   // Move it to the beginning of the line
+//   line.position.set(nodeObject.x, nodeObject.y);
+//   line.zIndex = 1;
 
-  return container;
-};
+//   // Draw the line (endPoint should be relative to myGraph's position)
+
+//   const dAppObject1 = setupObject(createSprite(GameObject.Dao, 1), {
+//     x: -70,
+//     y: 0,
+//   });
+//   dAppObject1.zIndex = 2;
+//   const dAppObject2 = setupObject(createSprite(GameObject.Dex, 2), {
+//     x: 0,
+//     y: 70,
+//   });
+//   dAppObject2.zIndex = 2;
+//   const dAppObject3 = setupObject(createSprite(GameObject.Staking, 3), {
+//     x: 0,
+//     y: -70,
+//   });
+//   dAppObject3.zIndex = 2;
+
+//   line.lineStyle(2, 0x000).lineTo(0, 0).lineTo(dAppObject1.x, dAppObject1.y);
+//   line.lineStyle(2, 0x000).lineTo(0, 0).lineTo(dAppObject2.x, dAppObject2.y);
+//   line.lineStyle(2, 0x000).lineTo(0, 0).lineTo(dAppObject3.x, dAppObject3.y);
+
+//   container.addChild(nodeObject, dAppObject1, dAppObject2, dAppObject3, line);
+
+//   return container;
+// };
+
+class Node {
+  container = new PIXI.Container();
+
+  node: PIXI.Sprite;
+  dApp1?: PIXI.Sprite;
+  line1?: PIXI.Graphics;
+
+  dApp2?: PIXI.Sprite;
+  line2?: PIXI.Graphics;
+
+  dApp3?: PIXI.Sprite;
+  line3?: PIXI.Graphics;
+
+  constructor({ level }: { level: Level }) {
+    // Sort by zIndex layer
+    this.container.sortableChildren = true;
+
+    this.node = this.createObject(new PIXI.Sprite(GAME_TEXTURES.node[level]));
+
+    this.container.addChild(this.node);
+  }
+
+  add(app: PIXI.Sprite) {
+    this.dApp1 = this.createObject(app, { x: -100 });
+    this.line1 = this.createLine(this.dApp1);
+
+    this.container.addChild(this.dApp1, this.line1);
+  }
+
+  private createObject(
+    object: PIXI.Sprite,
+    { x, y }: { x?: number; y?: number } = { x: 0, y: 0 }
+  ) {
+    const dapp = object;
+    dapp.zIndex = 2;
+    dapp.anchor.set(0.5);
+    dapp.setTransform(x, y);
+
+    return dapp;
+  }
+
+  private createLine(object: PIXI.Sprite) {
+    const line = new PIXI.Graphics();
+    line.position.set(this.node.x, this.node.y);
+    line.zIndex = 1;
+    line.lineStyle(2, 0x000).lineTo(object.x, object.y);
+
+    return line;
+  }
+}
