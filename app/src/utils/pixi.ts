@@ -18,11 +18,6 @@ import Staking1 from "@assets/game/Staking1.svg";
 import Staking2 from "@assets/game/Staking2.svg";
 import Staking3 from "@assets/game/Staking3.svg";
 
-interface ObjectConfig {
-  x: number;
-  y: number;
-}
-
 enum GameObject {
   Network,
   Node,
@@ -46,33 +41,22 @@ export const setup = (ref: RefObject<HTMLDivElement>) => {
 
   ref.current.appendChild(APP.view);
 
-  const network = setupObject(createSprite(GameObject.Network, 1), {
-    x: APP.renderer.width / 2,
-    y: APP.renderer.height / 2,
-  });
+  const network = new Network({ level: 1 });
+
+  network.container.x = APP.renderer.width / 2;
+  network.container.y = APP.renderer.height / 2;
+
   const node = new Node({ level: 1 });
 
   node.add(createSprite(GameObject.Dao, 1));
 
-  node.container.x = APP.renderer.width / 2 - 220;
-  node.container.y = APP.renderer.height / 2;
+  network.add(node);
 
   const container = new PIXI.Container();
 
-  // Add the node to the scene we are building
-  container.addChild(network);
-
-  container.addChild(node.container);
-
-  container.scale.set(1, 1);
+  container.addChild(network.container);
 
   APP.stage.addChild(container);
-
-  // // Listen for frame updates
-  // APP.ticker.add(() => {
-  //       // each frame we spin the node around a bit
-  //     node.rotation += 0.01;
-  // });
 };
 
 const GAME_TEXTURES = {
@@ -125,91 +109,27 @@ const createSprite = (gameObject: GameObject, level: Level): PIXI.Sprite => {
   }
 };
 
-const setupObject = (sprite: PIXI.Sprite, { x, y }: ObjectConfig) => {
-  sprite.x = x;
-  sprite.y = y;
+interface BaseConfig {
+  level: Level;
+  rootTexture: PIXI.Texture;
+}
 
-  sprite.anchor.x = 0.5;
-  sprite.anchor.y = 0.5;
-
-  // sprite.rotation = 0.785;
-
-  return sprite;
-};
-
-// const Node = (level: Level) => {
-//   const container = new PIXI.Container();
-//   container.sortableChildren = true;
-
-//   const nodeObject = setupObject(createSprite(GameObject.Node, level), {
-//     x: 0,
-//     y: 0,
-//   });
-//   nodeObject.zIndex = 2;
-
-//   const line = new PIXI.Graphics();
-
-//   // Move it to the beginning of the line
-//   line.position.set(nodeObject.x, nodeObject.y);
-//   line.zIndex = 1;
-
-//   // Draw the line (endPoint should be relative to myGraph's position)
-
-//   const dAppObject1 = setupObject(createSprite(GameObject.Dao, 1), {
-//     x: -70,
-//     y: 0,
-//   });
-//   dAppObject1.zIndex = 2;
-//   const dAppObject2 = setupObject(createSprite(GameObject.Dex, 2), {
-//     x: 0,
-//     y: 70,
-//   });
-//   dAppObject2.zIndex = 2;
-//   const dAppObject3 = setupObject(createSprite(GameObject.Staking, 3), {
-//     x: 0,
-//     y: -70,
-//   });
-//   dAppObject3.zIndex = 2;
-
-//   line.lineStyle(2, 0x000).lineTo(0, 0).lineTo(dAppObject1.x, dAppObject1.y);
-//   line.lineStyle(2, 0x000).lineTo(0, 0).lineTo(dAppObject2.x, dAppObject2.y);
-//   line.lineStyle(2, 0x000).lineTo(0, 0).lineTo(dAppObject3.x, dAppObject3.y);
-
-//   container.addChild(nodeObject, dAppObject1, dAppObject2, dAppObject3, line);
-
-//   return container;
-// };
-
-class Node {
+class Base {
   container = new PIXI.Container();
+  root = new PIXI.Sprite();
 
-  node: PIXI.Sprite;
-  dApp1?: PIXI.Sprite;
-  line1?: PIXI.Graphics;
+  level: Level = 1;
 
-  dApp2?: PIXI.Sprite;
-  line2?: PIXI.Graphics;
-
-  dApp3?: PIXI.Sprite;
-  line3?: PIXI.Graphics;
-
-  constructor({ level }: { level: Level }) {
+  constructor({ level, rootTexture }: BaseConfig) {
     // Sort by zIndex layer
     this.container.sortableChildren = true;
+    this.level = level;
+    this.root = this.createObject(new PIXI.Sprite(rootTexture));
 
-    this.node = this.createObject(new PIXI.Sprite(GAME_TEXTURES.node[level]));
-
-    this.container.addChild(this.node);
+    this.container.addChild(this.root);
   }
 
-  add(app: PIXI.Sprite) {
-    this.dApp1 = this.createObject(app, { x: -100 });
-    this.line1 = this.createLine(this.dApp1);
-
-    this.container.addChild(this.dApp1, this.line1);
-  }
-
-  private createObject(
+  protected createObject(
     object: PIXI.Sprite,
     { x, y }: { x?: number; y?: number } = { x: 0, y: 0 }
   ) {
@@ -221,12 +141,70 @@ class Node {
     return dapp;
   }
 
-  private createLine(object: PIXI.Sprite) {
+  protected createLine(x: number, y: number) {
     const line = new PIXI.Graphics();
-    line.position.set(this.node.x, this.node.y);
+    line.position.set(this.root.x, this.root.y);
     line.zIndex = 1;
-    line.lineStyle(2, 0x000).lineTo(object.x, object.y);
+    line.lineStyle(2, 0x000).lineTo(x, y);
 
     return line;
+  }
+}
+class Network extends Base {
+  // TODO: Think about storing data in array instead several variables
+  //       same for Node class
+  node1?: Node;
+  line1?: PIXI.Graphics;
+
+  node2?: Node;
+  line2?: PIXI.Graphics;
+
+  node3?: Node;
+  line3?: PIXI.Graphics;
+
+  node4?: Node;
+  line4?: PIXI.Graphics;
+
+  constructor({ level }: Omit<BaseConfig, "rootTexture">) {
+    // TODO: Add more networks
+    const rootTexture = GAME_TEXTURES.network[1];
+    super({ level, rootTexture });
+  }
+
+  add(node: Node) {
+    this.node1 = node;
+
+    this.node1.container.x = -220;
+    this.node1.container.y = 0;
+
+    this.line1 = this.createLine(
+      this.node1.container.x,
+      this.node1.container.y
+    );
+
+    this.container.addChild(this.node1.container, this.line1);
+  }
+}
+
+class Node extends Base {
+  dApp1?: PIXI.Sprite;
+  line1?: PIXI.Graphics;
+
+  dApp2?: PIXI.Sprite;
+  line2?: PIXI.Graphics;
+
+  dApp3?: PIXI.Sprite;
+  line3?: PIXI.Graphics;
+
+  constructor({ level }: Omit<BaseConfig, "rootTexture">) {
+    const rootTexture = GAME_TEXTURES.node[level];
+    super({ level, rootTexture });
+  }
+
+  add(app: PIXI.Sprite) {
+    this.dApp1 = this.createObject(app, { x: -100 });
+    this.line1 = this.createLine(this.dApp1.x, this.dApp1.y);
+
+    this.container.addChild(this.dApp1, this.line1);
   }
 }
