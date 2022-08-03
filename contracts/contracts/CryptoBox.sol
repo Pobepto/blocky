@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract CryptoBox {
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "./CryptoBoxDB.sol";
+
+contract CryptoBox is Ownable {
   enum DAPP_CATEGORY {
     DEFI,
     GAMEFI
@@ -10,11 +13,6 @@ contract CryptoBox {
   enum DAPP_TYPE {
     DEFI_DEX,
     DEFI_YIELD_FARMING
-  }
-
-  struct NodeData {
-    uint basePrice;
-    uint tpsIncrement;
   }
 
   struct DApp {
@@ -39,26 +37,10 @@ contract CryptoBox {
   Blockchain[] private _blockchains;
   DApp[] private _dapps;
 
-  NodeData[3] private _NODES_DATA;
+  CryptoBoxDB private _db;
 
-  constructor() {
-    // Level 1 node
-    _NODES_DATA[0] = NodeData({
-      basePrice: 100, // buy price
-      tpsIncrement: 1
-    });
-
-    // Level 2 node
-    _NODES_DATA[1] = NodeData({
-      basePrice: 1000, // upgrade price
-      tpsIncrement: 10
-    });
-
-    // Level 3 node
-    _NODES_DATA[2] = NodeData({
-      basePrice: 10000, // upgrade price
-      tpsIncrement: 100
-    });
+  constructor(CryptoBoxDB db) {
+    _db = db;
   }
 
   function createBlockchain() external {
@@ -90,7 +72,7 @@ contract CryptoBox {
     // TODO: какой будет лимит на количество нод, можно ли его увеличить?
     require(totalNodes < 22, "You can't buy more than 22 nodes");
 
-    NodeData memory NODE1_DATA = _NODES_DATA[0];
+    CryptoBoxDB.NodeData memory NODE1_DATA = _db.getNodeByLevel(1);
 
     // TODO: супер тупая формула, но в будущем нужно будет сделать так, чтобы покупка следующей ноды была дороже предыдущей
     uint nodePrice = NODE1_DATA.basePrice * totalNodes;
@@ -106,7 +88,7 @@ contract CryptoBox {
 
     require(blockchain.nodes1Amount > 0, "You can't upgrade a node if there is no node");
 
-    NodeData memory NODE2_DATA = _NODES_DATA[1];
+    CryptoBoxDB.NodeData memory NODE2_DATA = _db.getNodeByLevel(2);
     require(blockchain.liquidity >= NODE2_DATA.basePrice, "Not enough liquidity");
 
     blockchain.nodes1Amount -= 1;
@@ -120,7 +102,7 @@ contract CryptoBox {
 
     require(blockchain.nodes2Amount > 0, "You can't upgrade a node if there is no node");
 
-    NodeData memory NODE3_DATA = _NODES_DATA[2];
+    CryptoBoxDB.NodeData memory NODE3_DATA = _db.getNodeByLevel(3);
     require(blockchain.liquidity >= NODE3_DATA.basePrice, "Not enough liquidity");
 
     blockchain.nodes1Amount -= 1;
@@ -145,6 +127,12 @@ contract CryptoBox {
     blockchain.dappsIds.push(_dapps.length - 1);
   }
 
+  // onlyOwner methods
+  function setDB(CryptoBoxDB db) external onlyOwner {
+    _db = db;
+  }
+
+  //view methods
   function getBlockchain(uint blockchainId) private view returns (Blockchain storage) {
     Blockchain storage blockchain = _blockchains[blockchainId];
 
@@ -152,5 +140,18 @@ contract CryptoBox {
     require(blockchain.owner == msg.sender, "Only blockchain owner can create dapp");
 
     return blockchain;
+  }
+
+  function getBlockchainInfo(uint blockchainId) external view returns (Blockchain memory) {
+    return _blockchains[blockchainId];
+  }
+
+  function getDappsInfo(uint[] calldata dappsIds) external view returns (DApp[] memory dapps) {
+    uint amount = dappsIds.length;
+    dapps = new DApp[](amount);
+
+    for (uint i = 0; i < amount; i++) {
+      dapps[i] = _dapps[dappsIds[i]];
+    }
   }
 }

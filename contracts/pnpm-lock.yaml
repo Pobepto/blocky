@@ -2,11 +2,13 @@ lockfileVersion: 5.4
 
 specifiers:
   '@babel/core': ^7.18.9
+  '@openzeppelin/contracts': ^4.7.2
   '@truffle/hdwallet-provider': ^2.0.12
   dotenv: ^16.0.1
 
 devDependencies:
   '@babel/core': 7.18.9
+  '@openzeppelin/contracts': 4.7.2
   '@truffle/hdwallet-provider': 2.0.12_@babel+core@7.18.9
   dotenv: 16.0.1
 
@@ -325,6 +327,10 @@ packages:
 
   /@noble/secp256k1/1.6.3:
     resolution: {integrity: sha512-T04e4iTurVy7I8Sw4+c5OSN9/RkPlo1uKxAomtxQNLq8j1uPAqnsqG1bqvY3Jv7c13gyr6dui0zmh/I3+f/JaQ==}
+    dev: true
+
+  /@openzeppelin/contracts/4.7.2:
+    resolution: {integrity: sha512-4n/JL9izql8303mPqPdubuna/DWEMbmOzWYUWyCPhjhiEr2w3nQrjE7vZz1fBF+wzzP6dZbIcsgqACk53c9FGA==}
     dev: true
 
   /@scure/base/1.1.1:
