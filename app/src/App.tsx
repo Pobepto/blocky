@@ -9,7 +9,8 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     if (!appRef.current) return;
-    setup(appRef);
+    appRef.current.innerHTML = "";
+    setup(appRef.current);
   }, []);
 
   return <div ref={appRef} className="App"></div>;
