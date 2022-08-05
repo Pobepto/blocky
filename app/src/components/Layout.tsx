@@ -16,4 +16,8 @@ export const Layout: React.FC<Props> = ({ children }) => {
   );
 };
 
-const Root = styled.div``;
+const Root = styled.div`
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+`;

@@ -11,7 +11,7 @@ const DARK_COLORS: Colors = {
   red: "#FF424B",
   green: "#00B579",
   orange: "#FFA144",
-  yellow: "F6E600",
+  yellow: "#F6E600",
 };
 
 export const colors: Record<THEME_TYPE, Colors> = {
