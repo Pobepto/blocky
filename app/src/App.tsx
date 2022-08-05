@@ -1,8 +1,7 @@
 import React, { createRef, useEffect } from "react";
 
+import { Layout } from "./components/Layout";
 import { setup } from "./utils/pixi";
-
-import "./App.css";
 
 export const App: React.FC = () => {
   const appRef = createRef<HTMLDivElement>();
@@ -13,11 +12,9 @@ export const App: React.FC = () => {
     setup(appRef.current);
   }, []);
 
-  return <div ref={appRef} className="App"></div>;
+  return (
+    <Layout>
+      <div ref={appRef}></div>
+    </Layout>
+  );
 };
-
-export default App;
-
-// export const App: React.FC = () => {
-//   return <Node level={1} />;
-// };

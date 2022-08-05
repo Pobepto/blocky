@@ -19,6 +19,7 @@ specifiers:
   eslint-plugin-react: ^7.30.0
   eslint-plugin-simple-import-sort: ^7.0.0
   eslint-plugin-unused-imports: ^2.0.0
+  normalize.css: ^8.0.1
   pixi.js: ^6.5.1
   prettier: ^2.6.2
   react: ^18.2.0
@@ -30,6 +31,7 @@ specifiers:
 dependencies:
   '@emotion/react': 11.9.3_3hx2ussxxho4jajbwrd6gq34qe
   '@emotion/styled': 11.9.3_t4da3hocwt6ljcf3o6em4qwqzm
+  normalize.css: 8.0.1
   pixi.js: 6.5.1
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
@@ -3870,6 +3872,10 @@ packages:
   /node-releases/2.0.6:
     resolution: {integrity: sha512-PiVXnNuFm5+iYkLBNeq5211hvO38y63T0i2KKh2KnUs3RpzJ+JtODFjkD8yjLwnDkTYF1eKXheUwdssR+NRZdg==}
     dev: true
+
+  /normalize.css/8.0.1:
+    resolution: {integrity: sha512-qizSNPO93t1YUuUhP22btGOo3chcvDFqFaj2TRybP0DMxkHOCTYwp3n34fel4a31ORXy4m1Xq0Gyqpb5m33qIg==}
+    dev: false
 
   /object-assign/4.1.1:
     resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}
