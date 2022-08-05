@@ -14,7 +14,7 @@ export const ThemeWrapper: React.FC<Props> = ({ children }) => {
 
   return (
     <ThemeProvider theme={theme}>
-      <GlobalStyles themeType={THEME_TYPE.DARK} />
+      <GlobalStyles />
       {children}
     </ThemeProvider>
   );
