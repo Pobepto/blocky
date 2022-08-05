@@ -2,12 +2,11 @@ import React from "react";
 import styled from "@emotion/styled";
 
 import { BlockRain, BlockType } from "./Block";
-import { Level } from "./GameObject";
 import { Node } from "./Node";
 import { OffsetBlock } from "./OffsetBlock";
 
 interface Props {
-  level: Level;
+  level: number;
 }
 
 export const Blockchain: React.FC<Props> = ({ level }) => {
