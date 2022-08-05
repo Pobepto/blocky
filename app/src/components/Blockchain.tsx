@@ -229,7 +229,8 @@ const HorizontalLine = styled.div<{
     width: 6px;
     height: 6px;
     top: -4px;
-    background: ${({ theme }) => theme.colors.yellow};
+    background: ${({ theme, reverse }) =>
+      reverse ? theme.colors.yellow : "gray"};
     animation: move ${({ duration }) => duration()}s ease-in-out infinite;
     animation-direction: ${({ reverse }) => (reverse ? "reverse" : "normal")};
   }
