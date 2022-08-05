@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import styled from "@emotion/styled";
 
 import { ReactComponent as Logo } from "@assets/images/logo.svg";
@@ -7,14 +8,21 @@ export const Header: React.FC = () => {
   return (
     <Root>
       <LogoBlock>
-        <Logo />
+        <Link to="/">
+          <Logo />
+        </Link>
       </LogoBlock>
       <MenuBlock>
-        <MenuItem>HOME</MenuItem>
-        <MenuItem>ABOUT</MenuItem>
+        <MenuItem>
+          <Link to="/">HOME</Link>
+        </MenuItem>
+        <MenuItem>
+          <Link to="/about">ABOUT</Link>
+        </MenuItem>
       </MenuBlock>
       <AddressBlock>
-        <Address>0xab7d...b7e43</Address>
+        <span>0xab7d...b7e43</span>
+        <span>DISCONNECT</span>
       </AddressBlock>
     </Root>
   );
@@ -29,6 +37,7 @@ const Root = styled.div`
   /* width: 100%; */
 `;
 const LogoBlock = styled.div`
+  width: 160px;
   cursor: pointer;
   color: ${({ theme }) => theme.colors.red};
 `;
@@ -58,11 +67,15 @@ const MenuItem = styled.span`
     transform: scaleX(1);
   }
 `;
-const AddressBlock = styled.div``;
-const Address = styled.span`
-  text-align: center;
-  font-size: 14px;
+const AddressBlock = styled.div`
+  width: 160px;
   cursor: pointer;
+  font-size: 12px;
+  text-align: center;
+
+  span:nth-of-type(2) {
+    display: none;
+  }
 
   :after {
     display: block;
@@ -75,5 +88,11 @@ const Address = styled.span`
   }
   :hover:after {
     transform: scaleX(1);
+  }
+  :hover span:nth-of-type(1) {
+    display: none;
+  }
+  :hover span:nth-of-type(2) {
+    display: block;
   }
 `;

@@ -22,6 +22,12 @@ export const GlobalStyles: React.FC = () => {
           color: ${colors.white};
           height: 100vh;
         }
+
+        a {
+          text-decoration: none;
+          color: unset;
+          text-align: unset;
+        }
       `}
     />
   );
