@@ -4,12 +4,26 @@ import styled from "@emotion/styled";
 import { ReactComponent as Metamask } from "@assets/images/metamask.svg";
 import { Layout } from "@components/Layout";
 import { useWeb3React } from "@web3-react/core";
+import { Web3Provider } from "@ethersproject/providers";
+import { useEagerConnect, useInactiveListener } from "@src/utils/metamask";
 
 export const Auth: React.FC = () => {
-  const { connector } = useWeb3React()
-  console.log(`Priority Connector is: ${connector}`)
+  const context = useWeb3React<Web3Provider>()
+  const { connector, library, chainId, account, activate, deactivate, active, error } = context
 
-  connector.activate(1);
+  // handle logic to recognize the connector currently being activated
+  const [activatingConnector, setActivatingConnector] = React.useState<any>()
+  React.useEffect(() => {
+    if (activatingConnector && activatingConnector === connector) {
+      setActivatingConnector(undefined)
+    }
+  }, [activatingConnector, connector])
+
+  // handle logic to eagerly connect to the injected ethereum provider, if it exists and has granted access already
+  const triedEager = useEagerConnect()
+
+  // handle logic to connect in reaction to certain events on the injected ethereum provider, if it exists
+  useInactiveListener(!triedEager || !!activatingConnector)
 
   return (
     <Layout>
