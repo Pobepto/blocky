@@ -1,9 +1,8 @@
 import React from "react";
 import styled from "@emotion/styled";
 
-// import { ReactComponent as DexSVG } from "@assets/game2/Dex.svg";
-import { ReactComponent as DaoSVG } from "@assets/game2/Dao.svg";
-import { ReactComponent as NodeSVG } from "@assets/game2/Node.svg";
+import { ReactComponent as DaoSVG } from "@assets/game/Dao.svg";
+import { ReactComponent as NodeSVG } from "@assets/game/Node.svg";
 
 import { OffsetBlock } from "./OffsetBlock";
 
@@ -14,6 +13,9 @@ interface IProps {
 
 export const Node: React.FC<IProps> = ({ dapps, reverse }) => {
   const lineTopOffset = (44 / 2 + 40) * (reverse ? 1 : -1);
+
+  const randomDuration = () => 1 + Math.random();
+
   return (
     <Container>
       {dapps.map((_, index) => {
@@ -26,10 +28,10 @@ export const Node: React.FC<IProps> = ({ dapps, reverse }) => {
         );
       })}
       <OffsetBlock left={-5} top={lineTopOffset}>
-        <VerticalLine duration={() => 1} height={44} />
+        <VerticalLine duration={randomDuration} height={44} />
       </OffsetBlock>
       <OffsetBlock left={5} top={lineTopOffset}>
-        <VerticalLine duration={() => 1} height={44} reverse />
+        <VerticalLine duration={randomDuration} height={44} reverse />
       </OffsetBlock>
       <NodeSVG />
     </Container>

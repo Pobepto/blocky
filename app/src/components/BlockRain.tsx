@@ -1,12 +1,12 @@
 import React from "react";
 import styled from "@emotion/styled";
 
-import defaultImg from "@assets/game2/block/Block.svg";
-import blueImg from "@assets/game2/block/BlueBlock.svg";
-import greenImg from "@assets/game2/block/GreenBlock.svg";
-import orangeImg from "@assets/game2/block/OrangeBlock.svg";
-import redImg from "@assets/game2/block/RedBlock.svg";
-import yellowImg from "@assets/game2/block/YellowBlock.svg";
+import defaultImg from "@assets/game/block/Block.svg";
+import blueImg from "@assets/game/block/BlueBlock.svg";
+import greenImg from "@assets/game/block/GreenBlock.svg";
+import orangeImg from "@assets/game/block/OrangeBlock.svg";
+import redImg from "@assets/game/block/RedBlock.svg";
+import yellowImg from "@assets/game/block/YellowBlock.svg";
 
 export enum BlockType {
   DEFAULT,
@@ -49,28 +49,13 @@ export const Block: React.FC<Props> = ({
 };
 
 export const BlockRain: React.FC<RainProps> = ({ colors, reverse }) => {
+  const blocks = 9;
+
   return (
     <Root>
-      <Block colors={colors} reverse={reverse} />
-      <Block colors={colors} reverse={reverse} />
-      <Block colors={colors} reverse={reverse} />
-      <Block colors={colors} reverse={reverse} />
-      <Block colors={colors} reverse={reverse} />
-      <Block colors={colors} reverse={reverse} />
-      <Block colors={colors} reverse={reverse} />
-      <Block colors={colors} reverse={reverse} />
-      <Block colors={colors} reverse={reverse} />
-      {/* <Block colors={colors} reverse={reverse} />
-      <Block colors={colors} reverse={reverse} />
-      <Block colors={colors} reverse={reverse} />
-      <Block colors={colors} reverse={reverse} />
-      <Block colors={colors} reverse={reverse} />
-      <Block colors={colors} reverse={reverse} />
-      <Block colors={colors} reverse={reverse} />
-      <Block colors={colors} reverse={reverse} />
-      <Block colors={colors} reverse={reverse} />
-      <Block colors={colors} reverse={reverse} />
-      <Block colors={colors} reverse={reverse} /> */}
+      {Array.from(Array(blocks), (_, index) => (
+        <Block key={index} colors={colors} reverse={reverse} />
+      ))}
     </Root>
   );
 };

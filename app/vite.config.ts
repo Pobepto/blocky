@@ -16,4 +16,7 @@ export default defineConfig({
     svgr(),
     checker({ typescript: true }),
   ],
+  server: {
+    port: 3000,
+  },
 });
