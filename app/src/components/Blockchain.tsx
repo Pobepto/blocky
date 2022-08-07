@@ -22,6 +22,12 @@ export const Blockchain: React.FC<Props> = ({ level }) => {
 
   return (
     <Container>
+      <OffsetBlock left={0} top={-200}>
+        <BlockRain />
+      </OffsetBlock>
+      <ChainCore>
+        <PulsationCircle />
+      </ChainCore>
       <OffsetBlock left={0} top={250}>
         <BlockRain
           colors={[
@@ -33,12 +39,6 @@ export const Blockchain: React.FC<Props> = ({ level }) => {
           ]}
           reverse
         />
-      </OffsetBlock>
-      <ChainCore>
-        <PulsationCircle />
-      </ChainCore>
-      <OffsetBlock left={0} top={-200}>
-        <BlockRain />
       </OffsetBlock>
       {Array.from(Array(leftHalf)).map((_, index) => {
         const nodeLeftOffset = -(275 + index * 125);
