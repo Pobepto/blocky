@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 
 import { ReactComponent as Metamask } from "@assets/images/metamask.svg";
 import { Layout } from "@components/Layout";
-import { BlockRain } from "@src/components/Block";
+import { BlockRain } from "@src/components/BlockRain";
 import { OffsetBlock } from "@src/components/OffsetBlock";
 import { metaMask } from "@src/utils/metamask";
 
