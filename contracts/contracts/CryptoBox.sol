@@ -5,37 +5,19 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./CryptoBoxDB.sol";
 
 contract CryptoBox is Ownable {
-  enum DAPP_CATEGORY {
-    DEFI,
-    GAMEFI
-  }
-
-  enum DAPP_TYPE {
-    DEFI_DEX,
-    DEFI_YIELD_FARMING
-  }
-
-  struct DApp {
-    uint blockchainId; // reference to the blockchain
-    uint level;
-    DAPP_CATEGORY category;
-    DAPP_TYPE dappType; // `type` is a reserved keyword in Solidity, so we use `dappType` instead
-  }
-
   struct Blockchain {
     address owner;
-    uint liquidity;
+    uint liquidity; // total liquidity of the blockchain
+    uint liquidityPerBlock; // liquidity per block
+    uint startLiquidityEarnAt;
     uint tps; // total tps of the blockchain
-    uint usedTps; // tps uses by the blockchain dapps
-    uint nodes1Amount; // level 1 nodes amount
-    uint nodes2Amount; // level 2 nodes amount
-    uint nodes3Amount; // level 3 nodes amount
+    uint usedTps; // tps uses by the dapps
+    uint nodes;
     uint[] dappsIds;
   }
 
   mapping (address => uint[]) private _userBlockchains; // user_address -> blockchain_id[]
   Blockchain[] private _blockchains;
-  DApp[] private _dapps;
 
   CryptoBoxDB private _db;
 
@@ -44,15 +26,17 @@ contract CryptoBox is Ownable {
   }
 
   function createBlockchain() external {
+    CryptoBoxDB.NodeData memory NODE_DATA = _db.getNode();
+
     _blockchains.push(Blockchain({
       owner: msg.sender,
       liquidity: 0,
-      tps: 1, // TODO: tps of the first 1 level node
-      usedTps: 0, // TODO: first dapp will use this
-      nodes1Amount: 1,
-      nodes2Amount: 0,
-      nodes3Amount: 0,
-      dappsIds: new uint[](0) // TODO: initialize with the first dapp
+      liquidityPerBlock: 0,
+      startLiquidityEarnAt: block.number,
+      tps: NODE_DATA.tps,
+      usedTps: 0,
+      nodes: 1,
+      dappsIds: new uint[](0)
     }));
     
     uint blockchainId = _blockchains.length - 1;
@@ -65,66 +49,42 @@ contract CryptoBox is Ownable {
   }
 
   function buyNode(uint blockchainId) external {
-    Blockchain storage blockchain = getBlockchain(blockchainId);
+    Blockchain storage blockchain = _safeGetBlockchain(blockchainId);
 
-    uint totalNodes = blockchain.nodes1Amount + blockchain.nodes2Amount + blockchain.nodes3Amount;
+    uint nodes = blockchain.nodes;
 
-    // TODO: какой будет лимит на количество нод, можно ли его увеличить?
-    require(totalNodes < 22, "You can't buy more than 22 nodes");
+    // TODO: какой будет лимит на количество нод, можно ли его прокачать?
+    require(nodes < 22, "You can't buy more than 22 nodes");
 
-    CryptoBoxDB.NodeData memory NODE1_DATA = _db.getNodeByLevel(1);
+    CryptoBoxDB.NodeData memory NODE_DATA = _db.getNode();
 
     // TODO: супер тупая формула, но в будущем нужно будет сделать так, чтобы покупка следующей ноды была дороже предыдущей
-    uint nodePrice = NODE1_DATA.basePrice * totalNodes;
-    require(blockchain.liquidity >= nodePrice, "Not enough liquidity");
+    uint price = NODE_DATA.price * nodes;
 
-    blockchain.liquidity -= nodePrice;
-    blockchain.tps += NODE1_DATA.tpsIncrement;
-    blockchain.nodes1Amount += 1;
+    uint totalLiqudity = blockchain.liquidity + _getBlockchainPendingLiquidity(blockchain);
+
+    require(totalLiqudity >= price, "Not enough liquidity");
+
+    blockchain.liquidity = totalLiqudity - price;
+    blockchain.startLiquidityEarnAt = block.number;
+    blockchain.tps += NODE_DATA.tps;
+    blockchain.nodes += 1;
   }
 
-  function upgradeNode1(uint blockchainId) external {
-    Blockchain storage blockchain = getBlockchain(blockchainId);
+  function buyDApp(uint blockchainId, uint dappId) external {
+    Blockchain storage blockchain = _safeGetBlockchain(blockchainId);
+    CryptoBoxDB.DAppData memory DAPP_DATA = _db.getDAppById(dappId);
 
-    require(blockchain.nodes1Amount > 0, "You can't upgrade a node if there is no node");
+    uint totalLiqudity = blockchain.liquidity + _getBlockchainPendingLiquidity(blockchain);
 
-    CryptoBoxDB.NodeData memory NODE2_DATA = _db.getNodeByLevel(2);
-    require(blockchain.liquidity >= NODE2_DATA.basePrice, "Not enough liquidity");
+    require(totalLiqudity >= DAPP_DATA.price, "Not enough liquidity");
+    require((blockchain.tps - blockchain.usedTps) >= DAPP_DATA.tps, "Not enough tps");
 
-    blockchain.nodes1Amount -= 1;
-    blockchain.nodes2Amount += 1;
-    blockchain.liquidity -= NODE2_DATA.basePrice;
-    blockchain.tps += NODE2_DATA.tpsIncrement;
-  }
-
-  function upgradeNode2(uint blockchainId) external {
-    Blockchain storage blockchain = getBlockchain(blockchainId);
-
-    require(blockchain.nodes2Amount > 0, "You can't upgrade a node if there is no node");
-
-    CryptoBoxDB.NodeData memory NODE3_DATA = _db.getNodeByLevel(3);
-    require(blockchain.liquidity >= NODE3_DATA.basePrice, "Not enough liquidity");
-
-    blockchain.nodes1Amount -= 1;
-    blockchain.nodes2Amount += 1;
-    blockchain.liquidity -= NODE3_DATA.basePrice;
-    blockchain.tps += NODE3_DATA.tpsIncrement;
-  }
-
-  function createDApp(uint blockchainId, DAPP_CATEGORY category, DAPP_TYPE dappType) external {
-    Blockchain storage blockchain = getBlockchain(blockchainId);
-
-    // TODO: проверить, что у блокчейна хватает tps чтобы запустить на нём этот dapp
-
-    _dapps.push(DApp({
-      blockchainId: blockchainId,
-      level: 1,
-      category: category,
-      dappType: dappType
-    }));
-
-    blockchain.usedTps += 1; // TODO: используемое кол-во tps в зависимости от dapp
-    blockchain.dappsIds.push(_dapps.length - 1);
+    blockchain.liquidity = totalLiqudity - DAPP_DATA.price;
+    blockchain.liquidityPerBlock += DAPP_DATA.liquidityPerBlock;
+    blockchain.startLiquidityEarnAt = block.number;
+    blockchain.usedTps += DAPP_DATA.tps;
+    blockchain.dappsIds.push(dappId);
   }
 
   // onlyOwner methods
@@ -132,26 +92,25 @@ contract CryptoBox is Ownable {
     _db = db;
   }
 
-  //view methods
-  function getBlockchain(uint blockchainId) private view returns (Blockchain storage) {
+  // private view methods
+  function _safeGetBlockchain(uint blockchainId) private view returns (Blockchain storage) {
     Blockchain storage blockchain = _blockchains[blockchainId];
 
     require(blockchain.owner != address(0), "Blockchain not found");
-    require(blockchain.owner == msg.sender, "Only blockchain owner can create dapp");
+    require(blockchain.owner == msg.sender, "You are not the owner of this blockchain");
 
     return blockchain;
   }
 
-  function getBlockchainInfo(uint blockchainId) external view returns (Blockchain memory) {
-    return _blockchains[blockchainId];
+  function _getBlockchainPendingLiquidity(Blockchain memory blockchain) private view returns (uint) {
+    uint earnedLiqudiity = (block.number - blockchain.startLiquidityEarnAt) * blockchain.liquidityPerBlock;
+
+    return blockchain.liquidity + earnedLiqudiity;
   }
 
-  function getDappsInfo(uint[] calldata dappsIds) external view returns (DApp[] memory dapps) {
-    uint amount = dappsIds.length;
-    dapps = new DApp[](amount);
-
-    for (uint i = 0; i < amount; i++) {
-      dapps[i] = _dapps[dappsIds[i]];
-    }
+  // public view methods
+  function getBlockchain(uint blockchainId) external view returns (Blockchain memory blockchain, uint pendingLiquiduty) {
+    blockchain = _blockchains[blockchainId];
+    pendingLiquiduty = _getBlockchainPendingLiquidity(blockchain);
   }
 }

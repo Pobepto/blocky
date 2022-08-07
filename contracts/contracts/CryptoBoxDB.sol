@@ -2,34 +2,68 @@
 pragma solidity ^0.8.0;
 
 contract CryptoBoxDB {
-  struct NodeData {
-    uint basePrice;
-    uint tpsIncrement;
+  enum DAPP_GROUP {
+    DEFI,
+    GAMEFI
   }
 
-  NodeData[3] private _nodes;
+  enum DAPP_KIND {
+    DEFI_DEX,
+    DEFI_YIELD_FARMING
+  }
+
+  struct NodeData {
+    uint price;
+    uint tps;
+  }
+
+  struct DAppData {
+    DAPP_GROUP group;
+    DAPP_KIND kind;
+    uint price; // цена покупки
+    uint tps; // количество используемой tps
+    uint liquidityPerBlock; // сколько ликвидности за блок дает
+  }
+
+  NodeData private _node;
+  mapping(uint => DAppData) private _dapps; // dapp_id -> DAppData
 
   constructor() {
-    // Level 1 node
-    _nodes[0] = NodeData({
-      basePrice: 100, // buy price
-      tpsIncrement: 1
-    });
+    initNode();
+    initDApps();
+  }
 
-    // Level 2 node
-    _nodes[1] = NodeData({
-      basePrice: 1000, // upgrade price
-      tpsIncrement: 10
-    });
-
-    // Level 3 node
-    _nodes[2] = NodeData({
-      basePrice: 10000, // upgrade price
-      tpsIncrement: 100
+  function initNode() internal {
+    _node = NodeData({
+      price: 100,
+      tps: 1
     });
   }
 
-  function getNodeByLevel(uint level) public view returns (NodeData memory) {
-    return _nodes[level - 1];
+  function initDApps() internal {
+    _dapps[0] = DAppData({
+      group: DAPP_GROUP.DEFI,
+      kind: DAPP_KIND.DEFI_DEX,
+      price: 100,
+      tps: 1,
+      liquidityPerBlock: 1
+    });
+  }
+
+  function getNode() public view returns (NodeData memory) {
+    return _node;
+  }
+
+  function getDAppById(uint id) public view returns (DAppData memory) {
+    return _dapps[id];
+  }
+
+  function getDApps(uint[] calldata ids) external view returns (DAppData[] memory dapps) {
+    uint amount = ids.length;
+    dapps = new DAppData[](amount);
+
+    for (uint i = 0; i < amount; i++) {
+      dapps[i] = _dapps[ids[i]];
+    }
   }
 }
