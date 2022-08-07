@@ -3,8 +3,14 @@ import { Link } from "react-router-dom";
 import styled from "@emotion/styled";
 
 import { ReactComponent as Logo } from "@assets/images/logo.svg";
+import { useAccount } from "@src/hooks";
+import { getShortString } from "@src/utils/getShortString";
+import { metaMask, useIsActive } from "@src/utils/metamask";
 
 export const Header: React.FC = () => {
+  const account = useAccount();
+  const isActive = useIsActive();
+
   return (
     <Root>
       <LogoBlock>
@@ -14,16 +20,20 @@ export const Header: React.FC = () => {
       </LogoBlock>
       <MenuBlock>
         <MenuItem>
-          <Link to="/">HOME</Link>
+          <Link to="/">GAME</Link>
         </MenuItem>
         <MenuItem>
           <Link to="/about">ABOUT</Link>
         </MenuItem>
       </MenuBlock>
-      <AddressBlock>
-        <span>0xab7d...b7e43</span>
-        <span>DISCONNECT</span>
-      </AddressBlock>
+      {isActive ? (
+        <AddressBlock onClick={() => metaMask.deactivate!()}>
+          <span>{getShortString(account ?? "", 8)}</span>
+          <span>DISCONNECT</span>
+        </AddressBlock>
+      ) : (
+        <AddressBlock />
+      )}
     </Root>
   );
 };

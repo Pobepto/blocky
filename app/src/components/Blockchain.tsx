@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import styled from "@emotion/styled";
 
-import { Level } from "@src/constants";
 import { clamp } from "@src/utils/clamp";
 
 import { BlockRain, BlockType } from "./BlockRain";
@@ -9,7 +8,7 @@ import { Node } from "./Node";
 import { OffsetBlock } from "./OffsetBlock";
 
 interface Props {
-  level: Level;
+  level: number;
 }
 
 let zoom = 1;
@@ -53,6 +52,12 @@ export const Blockchain: React.FC<Props> = ({ level }) => {
   return (
     <Root>
       <Container ref={chainRef}>
+        <OffsetBlock left={0} top={-200}>
+          <BlockRain />
+        </OffsetBlock>
+        <ChainCore>
+          <PulsationCircle />
+        </ChainCore>
         <OffsetBlock left={0} top={250}>
           <BlockRain
             colors={[
@@ -65,13 +70,7 @@ export const Blockchain: React.FC<Props> = ({ level }) => {
             reverse
           />
         </OffsetBlock>
-        <ChainCore>
-          <PulsationCircle />
-        </ChainCore>
-        <OffsetBlock left={0} top={-200}>
-          <BlockRain />
-        </OffsetBlock>
-        {Array.from(Array(leftHalf), (_, index) => {
+        {Array.from(Array(leftHalf)).map((_, index) => {
           const nodeLeftOffset = -(275 + index * 125);
           const lineWidth = index === 0 ? 115 : 45;
           const lineLeftOffset = lineWidth / 2 + 40;

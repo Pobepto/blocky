@@ -1,1 +1,1 @@
-export type Level = 1 | 2 | 3;
+export const one = 1;
