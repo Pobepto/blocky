@@ -1,17 +1,7 @@
-<svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect y="10" width="10" height="10" fill="#00B7D8" fill-opacity="0.5"/>
-<rect x="10" width="10" height="10" fill="#00B7D8" fill-opacity="0.5"/>
-<rect x="10" y="20" width="10" height="10" fill="#00B7D8"/>
-<rect x="20" y="10" width="10" height="10" fill="#00B7D8"/>
-<rect x="30" y="10" width="10" height="10" fill="#00B7D8"/>
-<rect x="40" y="10" width="10" height="10" fill="#00B7D8"/>
-<rect x="40" y="20" width="10" height="10" fill="#00B7D8"/>
-<rect x="40" y="40" width="10" height="10" fill="#00B7D8"/>
-<rect x="20" y="40" width="10" height="10" fill="#00B7D8"/>
-<rect x="10" y="40" width="10" height="10" fill="#00B7D8"/>
-<rect x="10" y="30" width="10" height="10" fill="#00B7D8"/>
-<rect x="30" y="20" width="10" height="10" fill="#00B7D8"/>
-<rect x="30" y="30" width="10" height="10" fill="#00B7D8"/>
-<rect x="20" y="20" width="10" height="10" fill="#00B7D8"/>
-<rect x="20" y="30" width="10" height="10" fill="#00B7D8"/>
+<svg width="50" height="50" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 0V39.3939H19.1919V19.1919H39.3939V0H0Z" fill="#F6E600"/>
+<path d="M39.3939 80.8081V100H0V60.6061H19.1919V80.8081H39.3939Z" fill="#F6E600"/>
+<path d="M100 60.6061V100H60.6061V80.8081H80.8081V60.6061H100Z" fill="#F6E600"/>
+<path d="M60.6061 0H100V39.3939H80.8081V19.1919H60.6061V0Z" fill="#F6E600"/>
+<path d="M40.404 40.404V59.596H59.596V40.404H40.404Z" fill="#F6E600" fill-opacity="0.5"/>
 </svg>
