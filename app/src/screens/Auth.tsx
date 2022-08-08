@@ -8,6 +8,10 @@ import { OffsetBlock } from "@src/components/OffsetBlock";
 import { metaMask } from "@src/utils/metamask";
 
 export const Auth: React.FC = () => {
+  const onConnect = async () => {
+    await metaMask.activate(CHAIN_PARAMS);
+  };
+
   return (
     <Layout>
       <OffsetBlock left={0} top={-200}>
@@ -15,7 +19,7 @@ export const Auth: React.FC = () => {
       </OffsetBlock>
       <Root>
         {/* TODO: Add correct chain information, switch chain on connect */}
-        <ChainCore onClick={() => metaMask.activate(1)}>
+        <ChainCore onClick={onConnect}>
           <Metamask />
         </ChainCore>
         <OffsetBlock left={0} top={250}>

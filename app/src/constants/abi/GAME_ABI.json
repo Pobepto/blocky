@@ -1,0 +1,184 @@
+{
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "contract CryptoBoxDB",
+          "name": "db",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "createBlockchain",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "blockchainId",
+          "type": "uint256"
+        }
+      ],
+      "name": "buyNode",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "blockchainId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "dappId",
+          "type": "uint256"
+        }
+      ],
+      "name": "buyDApp",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract CryptoBoxDB",
+          "name": "db",
+          "type": "address"
+        }
+      ],
+      "name": "setDB",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "blockchainId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getBlockchain",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "liquidity",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "liquidityPerBlock",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "startLiquidityEarnAt",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "tps",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "usedTps",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "nodes",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256[]",
+              "name": "dappsIds",
+              "type": "uint256[]"
+            }
+          ],
+          "internalType": "struct CryptoBox.Blockchain",
+          "name": "blockchain",
+          "type": "tuple"
+        },
+        {
+          "internalType": "uint256",
+          "name": "pendingLiquiduty",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ]
+}

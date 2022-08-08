@@ -1,0 +1,126 @@
+{
+  "abi": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [],
+      "name": "getNode",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "price",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "tps",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct CryptoBoxDB.NodeData",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        }
+      ],
+      "name": "getDAppById",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "enum CryptoBoxDB.DAPP_GROUP",
+              "name": "group",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum CryptoBoxDB.DAPP_KIND",
+              "name": "kind",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint256",
+              "name": "price",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "tps",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "liquidityPerBlock",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct CryptoBoxDB.DAppData",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "ids",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "getDApps",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "enum CryptoBoxDB.DAPP_GROUP",
+              "name": "group",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum CryptoBoxDB.DAPP_KIND",
+              "name": "kind",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint256",
+              "name": "price",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "tps",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "liquidityPerBlock",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct CryptoBoxDB.DAppData[]",
+          "name": "dapps",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ]
+}

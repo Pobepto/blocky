@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import styled from "@emotion/styled";
 
+import { useStore } from "@src/store";
 import { clamp } from "@src/utils/clamp";
 
 import { BlockRain, BlockType } from "./BlockRain";
@@ -17,6 +18,8 @@ const zoomInLimit = 1;
 const zoomOutLimit = 0.5;
 
 export const Blockchain: React.FC<Props> = ({ level }) => {
+  const { store, update } = useStore();
+
   const chainRef = useRef<HTMLDivElement>(null);
 
   const nodes1Amount = 20;
@@ -49,6 +52,35 @@ export const Blockchain: React.FC<Props> = ({ level }) => {
     };
   }, []);
 
+  const renderNodes = (amount: number, position: "left" | "right") => {
+    const reverse = position === "left" ? -1 : 1;
+
+    return Array.from(Array(amount)).map((_, index) => {
+      const nodeLeftOffset = (275 + index * 125) * reverse;
+      const lineWidth = index === 0 ? 115 : 45;
+      const lineLeftOffset = (lineWidth / 2 + 40) * -reverse;
+
+      return (
+        <OffsetBlock key={index} left={nodeLeftOffset} top={0}>
+          <Node
+            dapps={Array.from(Array(amount - index))}
+            reverse={index % 2 === 0}
+          />
+          <OffsetBlock left={lineLeftOffset} top={-5}>
+            <HorizontalLine duration={randomDuration} width={lineWidth} />
+          </OffsetBlock>
+          <OffsetBlock left={lineLeftOffset} top={5}>
+            <HorizontalLine
+              duration={randomDuration}
+              width={lineWidth}
+              reverse
+            />
+          </OffsetBlock>
+        </OffsetBlock>
+      );
+    });
+  };
+
   return (
     <Root>
       <Container ref={chainRef}>
@@ -70,48 +102,8 @@ export const Blockchain: React.FC<Props> = ({ level }) => {
             reverse
           />
         </OffsetBlock>
-        {Array.from(Array(leftHalf)).map((_, index) => {
-          const nodeLeftOffset = -(275 + index * 125);
-          const lineWidth = index === 0 ? 115 : 45;
-          const lineLeftOffset = lineWidth / 2 + 40;
-
-          return (
-            <OffsetBlock key={index} left={nodeLeftOffset} top={0}>
-              <Node dapps={[1]} reverse={index % 2 === 0} />
-              <OffsetBlock left={lineLeftOffset} top={-5}>
-                <HorizontalLine duration={randomDuration} width={lineWidth} />
-              </OffsetBlock>
-              <OffsetBlock left={lineLeftOffset} top={5}>
-                <HorizontalLine
-                  duration={randomDuration}
-                  width={lineWidth}
-                  reverse
-                />
-              </OffsetBlock>
-            </OffsetBlock>
-          );
-        })}
-        {Array.from(Array(rightHalf), (_, index) => {
-          const nodeLeftOffset = 275 + index * 125;
-          const lineWidth = index === 0 ? 115 : 45;
-          const lineLeftOffset = -(lineWidth / 2 + 40);
-
-          return (
-            <OffsetBlock key={index} left={nodeLeftOffset} top={0}>
-              <Node dapps={[1, 2]} reverse={index % 2 === 0} />
-              <OffsetBlock left={lineLeftOffset} top={-5}>
-                <HorizontalLine
-                  duration={randomDuration}
-                  width={lineWidth}
-                  reverse
-                />
-              </OffsetBlock>
-              <OffsetBlock left={lineLeftOffset} top={5}>
-                <HorizontalLine duration={randomDuration} width={lineWidth} />
-              </OffsetBlock>
-            </OffsetBlock>
-          );
-        })}
+        {renderNodes(leftHalf, "left")}
+        {renderNodes(rightHalf, "right")}
       </Container>
     </Root>
   );

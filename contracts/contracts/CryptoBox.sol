@@ -113,4 +113,8 @@ contract CryptoBox is Ownable {
     blockchain = _blockchains[blockchainId];
     pendingLiquiduty = _getBlockchainPendingLiquidity(blockchain);
   }
+
+  function getUserBlockchains(address user) external view returns (uint[]) {
+    return _userBlockchains[user];
+  }
 }

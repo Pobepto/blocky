@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "@emotion/styled";
 
-import { ReactComponent as NodeSVG } from "@assets/game2/Node.svg";
+import { ReactComponent as NodeSVG } from "@assets/game/Node.svg";
 
 const Item: React.FC = () => {
   return (

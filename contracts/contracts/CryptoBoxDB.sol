@@ -26,7 +26,7 @@ contract CryptoBoxDB {
   }
 
   NodeData private _node;
-  mapping(uint => DAppData) private _dapps; // dapp_id -> DAppData
+  DAppData[] private _dapps;
 
   constructor() {
     initNode();
@@ -58,6 +58,11 @@ contract CryptoBoxDB {
     return _dapps[id];
   }
 
+  function getAllDApps() external view returns (DAppData[] memory dapps) {
+    return _dapps;
+  }
+
+  /*
   function getDApps(uint[] calldata ids) external view returns (DAppData[] memory dapps) {
     uint amount = ids.length;
     dapps = new DAppData[](amount);
@@ -65,5 +70,10 @@ contract CryptoBoxDB {
     for (uint i = 0; i < amount; i++) {
       dapps[i] = _dapps[ids[i]];
     }
+  }
+  */
+
+  function dappsAmount() external view returns (uint) {
+    return _dapps.length;
   }
 }
