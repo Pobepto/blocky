@@ -5,6 +5,7 @@ import { ReactComponent as Metamask } from "@assets/images/metamask.svg";
 import { Layout } from "@components/Layout";
 import { BlockRain } from "@src/components/BlockRain";
 import { OffsetBlock } from "@src/components/OffsetBlock";
+import { CHAIN_PARAMS } from "@src/constants";
 import { metaMask } from "@src/utils/metamask";
 
 export const Auth: React.FC = () => {

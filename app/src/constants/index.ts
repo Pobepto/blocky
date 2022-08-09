@@ -9,9 +9,25 @@ export const isDev = true;
 export const CHAIN_PARAMS: AddEthereumChainParameter = isDev
   ? {
       chainId: 80001,
+      chainName: "Polygon Mumbai",
+      nativeCurrency: {
+        name: "MATIC",
+        symbol: "MATIC",
+        decimals: 18,
+      },
+      rpcUrls: ["https://matic-mumbai.chainstacklabs.com"],
+      blockExplorerUrls: ["https://mumbai.polygonscan.com"],
     }
   : {
-      chainId: 80001,
+      chainId: 137,
+      chainName: "Polygon",
+      nativeCurrency: {
+        name: "MATIC",
+        symbol: "MATIC",
+        decimals: 18,
+      },
+      rpcUrls: ["https://matic-mainnet.chainstacklabs.com"],
+      blockExplorerUrls: ["https://polygonscan.com"],
     };
 
 export const CONTRACTS = {
