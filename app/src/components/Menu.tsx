@@ -48,6 +48,10 @@ const CounterBlock = styled.div`
   align-items: center;
   gap: 10px;
 
+  > span {
+    user-select: none;
+  }
+
   > span:nth-of-type(1),
   > span:nth-of-type(3) {
     cursor: pointer;
