@@ -30,7 +30,7 @@ contract CryptoBox is Ownable {
 
     _blockchains.push(Blockchain({
       owner: msg.sender,
-      liquidity: 0,
+      liquidity: 10,
       liquidityPerBlock: 0,
       startLiquidityEarnAt: block.number,
       tps: NODE_DATA.tps,
@@ -114,7 +114,7 @@ contract CryptoBox is Ownable {
     pendingLiquiduty = _getBlockchainPendingLiquidity(blockchain);
   }
 
-  function getUserBlockchains(address user) external view returns (uint[]) {
+  function getUserBlockchains(address user) external view returns (uint[] memory) {
     return _userBlockchains[user];
   }
 }

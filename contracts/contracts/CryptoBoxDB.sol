@@ -41,13 +41,13 @@ contract CryptoBoxDB {
   }
 
   function initDApps() internal {
-    _dapps[0] = DAppData({
+    _dapps.push(DAppData({
       group: DAPP_GROUP.DEFI,
       kind: DAPP_KIND.DEFI_DEX,
       price: 100,
       tps: 1,
       liquidityPerBlock: 1
-    });
+    }));
   }
 
   function getNode() public view returns (NodeData memory) {
@@ -60,20 +60,5 @@ contract CryptoBoxDB {
 
   function getAllDApps() external view returns (DAppData[] memory dapps) {
     return _dapps;
-  }
-
-  /*
-  function getDApps(uint[] calldata ids) external view returns (DAppData[] memory dapps) {
-    uint amount = ids.length;
-    dapps = new DAppData[](amount);
-
-    for (uint i = 0; i < amount; i++) {
-      dapps[i] = _dapps[ids[i]];
-    }
-  }
-  */
-
-  function dappsAmount() external view returns (uint) {
-    return _dapps.length;
   }
 }
