@@ -7,7 +7,7 @@ export const [metaMask, hooks] = initializeConnector(
 
 export const {
   useChainId,
-  useAccounts,
+  useAccount,
   useIsActivating,
   useIsActive,
   useProvider,

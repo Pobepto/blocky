@@ -17,10 +17,10 @@ const initialStore: IStore = {
 
 const StoreContext = createContext<{
   store: IStore;
-  update: <T extends keyof IStore>(key: T, value: IStore[T]) => void;
+  write: <T extends keyof IStore>(key: T, value: IStore[T]) => void;
 }>({
   store: initialStore,
-  update: () => null,
+  write: () => null,
 });
 
 export const useStore = () => {
@@ -32,7 +32,7 @@ export const Store: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [store, setStore] = useState(initialStore);
 
-  const update = <T extends keyof IStore>(key: T, value: IStore[T]) => {
+  const write = <T extends keyof IStore>(key: T, value: IStore[T]) => {
     setStore({
       ...store,
       [key]: value,
@@ -40,7 +40,7 @@ export const Store: React.FC<{ children: React.ReactNode }> = ({
   };
 
   return (
-    <StoreContext.Provider value={{ store, update }}>
+    <StoreContext.Provider value={{ store, write }}>
       {children}
     </StoreContext.Provider>
   );

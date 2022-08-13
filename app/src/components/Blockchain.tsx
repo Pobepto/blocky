@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import styled from "@emotion/styled";
 
-import { useStore } from "@src/store";
+import { useContracts } from "@src/hooks";
+import { useBlockchain } from "@src/hooks/useBlockchain";
 import { clamp } from "@src/utils/clamp";
 
 import { BlockRain, BlockType } from "./BlockRain";
@@ -9,7 +10,7 @@ import { Node } from "./Node";
 import { OffsetBlock } from "./OffsetBlock";
 
 interface Props {
-  level: number;
+  id: number;
 }
 
 let zoom = 1;
@@ -17,18 +18,18 @@ const zoomStep = 0.025;
 const zoomInLimit = 1;
 const zoomOutLimit = 0.5;
 
-export const Blockchain: React.FC<Props> = ({ level }) => {
-  const { store, update } = useStore();
+const randomDuration = () => 1 + Math.random();
+
+export const Blockchain: React.FC<Props> = ({ id }) => {
+  const { blockchain, isLoading } = useBlockchain(id);
 
   const chainRef = useRef<HTMLDivElement>(null);
 
-  const nodes1Amount = 20;
+  const nodesAmount = blockchain ? blockchain.nodes.toNumber() : 0;
 
-  const half = nodes1Amount / 2;
+  const half = nodesAmount / 2;
   const leftHalf = Math.floor(half);
   const rightHalf = Math.ceil(half);
-
-  const randomDuration = () => 1 + Math.random();
 
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
@@ -81,6 +82,10 @@ export const Blockchain: React.FC<Props> = ({ level }) => {
     });
   };
 
+  if (isLoading) {
+    return <div>Blockchain is loading...</div>;
+  }
+
   return (
     <Root>
       <Container ref={chainRef}>
@@ -109,6 +114,24 @@ export const Blockchain: React.FC<Props> = ({ level }) => {
   );
 };
 
+export const CreateBlockchain: React.FC = () => {
+  const { gameContract } = useContracts();
+
+  const createBlockchain = () => {
+    gameContract.createBlockchain();
+  };
+
+  return (
+    <Root>
+      <Container>
+        <CreateBlockchainButton onClick={createBlockchain}>
+          Create blockchain
+        </CreateBlockchainButton>
+      </Container>
+    </Root>
+  );
+};
+
 const Root = styled.div`
   display: flex;
   flex-grow: 1;
@@ -131,6 +154,13 @@ const ChainCore = styled.div`
   background-color: transparent;
   position: relative;
   display: flex;
+`;
+
+const CreateBlockchainButton = styled(ChainCore)`
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
 `;
 
 const PulsationCircle = styled.div`

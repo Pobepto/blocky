@@ -3,9 +3,8 @@ import { Link } from "react-router-dom";
 import styled from "@emotion/styled";
 
 import { ReactComponent as Logo } from "@assets/images/logo.svg";
-import { useAccount } from "@src/hooks";
 import { getShortString } from "@src/utils/getShortString";
-import { metaMask, useIsActive } from "@src/utils/metamask";
+import { metaMask, useAccount, useIsActive } from "@src/utils/metamask";
 
 export const Header: React.FC = () => {
   const account = useAccount();
