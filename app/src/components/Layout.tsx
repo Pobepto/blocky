@@ -52,6 +52,7 @@ const Footer = styled.div`
 const TVLBlock = styled.div`
   display: flex;
   align-items: center;
+  user-select: none;
 `;
 
 const ButtonsBlock = styled.div`

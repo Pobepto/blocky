@@ -55,10 +55,7 @@ const CounterBlock = styled.div`
   flex-direction: row;
   align-items: center;
   gap: 10px;
-
-  > span {
-    user-select: none;
-  }
+  user-select: none;
 
   > span:nth-of-type(1),
   > span:nth-of-type(3) {
