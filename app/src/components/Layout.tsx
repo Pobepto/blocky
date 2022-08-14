@@ -20,7 +20,7 @@ export const Layout: React.FC<Props> = ({ children }) => {
   return (
     <Root>
       <Header />
-      {isMenuVisible && <Menu />}
+      {isMenuVisible && <Menu close={() => setMenuVisible(false)} />}
       {children}
       <Footer>
         {/* TODO: Fix footer block and make it absolute */}
