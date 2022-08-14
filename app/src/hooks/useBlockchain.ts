@@ -23,12 +23,12 @@ export const useBlockchain = (id: number) => {
   useEffect(() => {
     const load = async () => {
       setLoading(true);
-      const { blockchain, pendingLiquiduty } =
+      const { blockchain, pendingLiquidity } =
         await gameContract.callStatic.getBlockchain(id);
 
       setBlockchain({
         ...blockchain,
-        pendingLiquidity: pendingLiquiduty,
+        pendingLiquidity,
       });
       setLoading(false);
     };

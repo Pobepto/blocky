@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
 
 import { useContracts } from "@src/hooks";
@@ -8,6 +8,7 @@ import { clamp } from "@src/utils/clamp";
 import { BlockRain, BlockType } from "./BlockRain";
 import { Node } from "./Node";
 import { OffsetBlock } from "./OffsetBlock";
+import { Spinner } from "./Spinner";
 
 interface Props {
   id: number;
@@ -83,7 +84,11 @@ export const Blockchain: React.FC<Props> = ({ id }) => {
   };
 
   if (isLoading) {
-    return <div>Blockchain is loading...</div>;
+    return (
+      <Root>
+        <Spinner />
+      </Root>
+    );
   }
 
   return (
@@ -115,18 +120,31 @@ export const Blockchain: React.FC<Props> = ({ id }) => {
 };
 
 export const CreateBlockchain: React.FC = () => {
+  const [isCreating, setCreating] = useState(false);
   const { gameContract } = useContracts();
 
-  const createBlockchain = () => {
-    gameContract.createBlockchain();
+  const createBlockchain = async () => {
+    try {
+      setCreating(true);
+      const tx = await gameContract.createBlockchain();
+      await tx.wait();
+    } catch (error) {
+      setCreating(false);
+    } finally {
+      setCreating(false);
+    }
   };
 
   return (
     <Root>
       <Container>
-        <CreateBlockchainButton onClick={createBlockchain}>
-          Create blockchain
-        </CreateBlockchainButton>
+        {isCreating ? (
+          <Spinner />
+        ) : (
+          <CreateBlockchainButton onClick={createBlockchain}>
+            Create blockchain
+          </CreateBlockchainButton>
+        )}
       </Container>
     </Root>
   );

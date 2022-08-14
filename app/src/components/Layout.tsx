@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
 
+import { ReactComponent as ImportantIcon } from "@assets/images/important.svg";
 import { ReactComponent as PlusIcon } from "@assets/images/plus.svg";
+import { ReactComponent as QuestionIcon } from "@assets/images/question.svg";
 
 import { Header } from "./Header";
 import { Menu } from "./Menu";
@@ -20,7 +22,14 @@ export const Layout: React.FC<Props> = ({ children }) => {
       {children}
       <Footer>
         {/* TODO: Fix footer block and make it absolute */}
-        <StyledPlusIcon onClick={() => setMenuVisible(true)} />
+        <TVLBlock>
+          <span>1,234,567,890 TVL</span>
+        </TVLBlock>
+        <ButtonsBlock>
+          <StyledQuestionIcon />
+          <StyledImportantIcon />
+          <StyledPlusIcon onClick={() => setMenuVisible(true)} />
+        </ButtonsBlock>
       </Footer>
     </Root>
   );
@@ -34,8 +43,18 @@ const Root = styled.div`
 
 const Footer = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   padding: 15px 50px;
+`;
+
+const TVLBlock = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const ButtonsBlock = styled.div`
+  display: flex;
+  gap: 20px;
 `;
 
 const StyledPlusIcon = styled(PlusIcon)`
@@ -43,6 +62,22 @@ const StyledPlusIcon = styled(PlusIcon)`
   transition: transform 0.4s ease-in-out;
 
   :hover {
-    transform: rotate(90deg);
+    transform: rotate(360deg);
+  }
+`;
+const StyledQuestionIcon = styled(QuestionIcon)`
+  cursor: pointer;
+  transition: transform 0.4s ease-in-out;
+
+  :hover {
+    transform: rotate(360deg);
+  }
+`;
+const StyledImportantIcon = styled(ImportantIcon)`
+  cursor: pointer;
+  transition: transform 0.4s ease-in-out;
+
+  :hover {
+    transform: rotate(360deg);
   }
 `;

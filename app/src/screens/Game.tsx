@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { Blockchain, CreateBlockchain } from "@components/Blockchain";
 import { Layout } from "@components/Layout";
+import { Spinner } from "@src/components/Spinner";
 import { useContracts } from "@src/hooks/useContracts";
 import { useStore } from "@src/store";
 import { useAccount } from "@src/utils/metamask";
@@ -45,7 +46,7 @@ export const Game: React.FC = () => {
   if (isLoading) {
     return (
       <Layout>
-        <h1>Loading...</h1>
+        <Spinner />
       </Layout>
     );
   }
