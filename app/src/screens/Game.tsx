@@ -9,23 +9,24 @@ import { useAccount } from "@src/utils/metamask";
 
 export const Game: React.FC = () => {
   const { write } = useStore();
-  const { gameContract, dbContract } = useContracts();
+  const contracts = useContracts();
   const account = useAccount();
   const [isLoading, setLoading] = useState(true);
   const [selectedBlockchainId, setSelectedBlockchainId] = useState<number>();
 
   useEffect(() => {
+    if (!contracts) return;
+
     const load = async () => {
       setLoading(true);
 
       const [node, dapps] = await Promise.all([
-        dbContract.callStatic.getNode(),
-        dbContract.callStatic.getAllDApps(),
+        contracts.dbContract.callStatic.getNode(),
+        contracts.dbContract.callStatic.getAllDApps(),
       ]);
 
-      const blockchainsIds = await gameContract.callStatic.getUserBlockchains(
-        account
-      );
+      const blockchainsIds =
+        await contracts.gameContract.callStatic.getUserBlockchains(account);
 
       if (blockchainsIds.length) {
         setSelectedBlockchainId(blockchainsIds[0].toNumber());

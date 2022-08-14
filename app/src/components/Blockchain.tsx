@@ -121,12 +121,13 @@ export const Blockchain: React.FC<Props> = ({ id }) => {
 
 export const CreateBlockchain: React.FC = () => {
   const [isCreating, setCreating] = useState(false);
-  const { gameContract } = useContracts();
+  const contracts = useContracts();
 
   const createBlockchain = async () => {
+    if (!contracts) return;
     try {
       setCreating(true);
-      const tx = await gameContract.createBlockchain();
+      const tx = await contracts.gameContract.createBlockchain();
       await tx.wait();
     } catch (error) {
       setCreating(false);

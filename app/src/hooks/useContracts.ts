@@ -9,7 +9,9 @@ export const useContracts = () => {
   const provider = useProvider();
 
   return useMemo(() => {
-    const signer = provider && provider.getSigner();
+    if (!provider) return;
+
+    const signer = provider.getSigner();
 
     const gameContract = new Contract(
       CONTRACTS.GAME.ADDRESS,

@@ -16,15 +16,17 @@ export interface IBlockchain {
 }
 
 export const useBlockchain = (id: number) => {
-  const { gameContract } = useContracts();
+  const contracts = useContracts();
   const [isLoading, setLoading] = useState(true);
   const [blockchain, setBlockchain] = useState<IBlockchain>();
 
   useEffect(() => {
+    if (!contracts) return;
+
     const load = async () => {
       setLoading(true);
       const { blockchain, pendingLiquidity } =
-        await gameContract.callStatic.getBlockchain(id);
+        await contracts.gameContract.callStatic.getBlockchain(id);
 
       setBlockchain({
         ...blockchain,
@@ -34,7 +36,7 @@ export const useBlockchain = (id: number) => {
     };
 
     load();
-  }, [gameContract]);
+  }, [contracts]);
 
   return {
     isLoading,

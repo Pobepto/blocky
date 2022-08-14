@@ -4,6 +4,7 @@ import styled from "@emotion/styled";
 import { ReactComponent as ImportantIcon } from "@assets/images/important.svg";
 import { ReactComponent as PlusIcon } from "@assets/images/plus.svg";
 import { ReactComponent as QuestionIcon } from "@assets/images/question.svg";
+import { useTVL } from "@src/hooks/useTVL";
 
 import { Header } from "./Header";
 import { Menu } from "./Menu";
@@ -14,6 +15,7 @@ interface Props {
 
 export const Layout: React.FC<Props> = ({ children }) => {
   const [isMenuVisible, setMenuVisible] = useState(false);
+  const TVL = useTVL();
 
   return (
     <Root>
@@ -23,7 +25,7 @@ export const Layout: React.FC<Props> = ({ children }) => {
       <Footer>
         {/* TODO: Fix footer block and make it absolute */}
         <TVLBlock>
-          <span>1,234,567,890 TVL</span>
+          <span>{TVL.toString()} TVL</span>
         </TVLBlock>
         <ButtonsBlock>
           <StyledQuestionIcon />
