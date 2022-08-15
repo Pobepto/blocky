@@ -33,11 +33,11 @@ export const CHAIN_PARAMS: AddEthereumChainParameter = isDev
 export const CONTRACTS = {
   GAME: {
     ABI: GAME_ABI,
-    ADDRESS: "0x810418f22376bb704be53a7509d1307a58845e5a",
+    ADDRESS: "0x8925bd28a373aDC983ed0Db0101D9AC85D6a54fb",
   },
   DB: {
     ABI: DB_ABI,
-    ADDRESS: "0x78183bb29621f17a2f864979879a464a1acb1930",
+    ADDRESS: "0x670f7667D919Cd8baC2217a988Df82Fa865d38BF",
   },
 };
 
@@ -65,6 +65,7 @@ export interface DApp {
 }
 
 export interface IBlockchain {
+  id: BigNumber;
   owner: string;
   color: string;
   liquidity: BigNumber;

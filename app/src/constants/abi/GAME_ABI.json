@@ -77,27 +77,24 @@
           "internalType": "uint256",
           "name": "blockchainId",
           "type": "uint256"
-        }
-      ],
-      "name": "buyNode",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "blockchainId",
-          "type": "uint256"
         },
         {
           "internalType": "uint256",
-          "name": "dappId",
+          "name": "nodes",
           "type": "uint256"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "dapps",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "dappsAmounts",
+          "type": "uint256[]"
         }
       ],
-      "name": "buyDApp",
+      "name": "buy",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -127,6 +124,11 @@
       "outputs": [
         {
           "components": [
+            {
+              "internalType": "uint256",
+              "name": "id",
+              "type": "uint256"
+            },
             {
               "internalType": "address",
               "name": "owner",

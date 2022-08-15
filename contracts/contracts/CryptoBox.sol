@@ -54,18 +54,16 @@ contract CryptoBox is Ownable {
   function buy(uint blockchainId, uint nodes, uint[] calldata dapps, uint[] calldata dappsAmounts) external {
     Blockchain storage blockchain = _safeGetBlockchain(blockchainId);
 
-    require(dapps.length == dappsAmounts, "");
-
     if (nodes > 0) {
       _buyNodes(blockchain, nodes);
     }
 
-    if (dapps.length) {
+    if (dapps.length > 0) {
       _buyDapps(blockchain, dapps, dappsAmounts);
     }
   }
 
-  function _buyNode(Blockchain storage blockchain, uint amount) internal {
+  function _buyNodes(Blockchain storage blockchain, uint amount) internal {
     uint currentNodes = blockchain.nodes;
 
     // TODO: какой будет лимит на количество нод, можно ли его прокачать?
@@ -85,7 +83,7 @@ contract CryptoBox is Ownable {
     blockchain.nodes += amount;
   }
 
-  function _buyDapps(Blockchain storage blockchain, uint[] calldata dapps, uint[] calldata dappsAmounts) internal {
+  function _buyDapps(Blockchain storage blockchain, uint[] memory dapps, uint[] memory dappsAmounts) internal {
     uint totalLiqudity = blockchain.liquidity + _getBlockchainPendingLiquidity(blockchain);
 
     uint totalPrice = 0;
@@ -119,7 +117,14 @@ contract CryptoBox is Ownable {
   }
 
   function cumulativeCost(uint baseCost, uint currentAmount, uint newAmount) internal view returns (uint) {
-    return (baseCost * (115**newAmount - 115**currentAmount)) / 15;
+    uint a = (115**currentAmount) / (100**(currentAmount - 1));
+    uint b = (115**newAmount) / (100**(newAmount - 1));
+    
+    if (currentAmount == 1) {
+      return (baseCost * (b - 115**currentAmount)) / 15;
+    }
+
+    return (baseCost * (b - a)) / 15;
   }
 
   // onlyOwner methods

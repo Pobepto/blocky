@@ -1,11 +1,14 @@
 import React, { useMemo, useRef, useState } from "react";
 import { keyframes } from "@emotion/react";
 import styled from "@emotion/styled";
+import { BigNumber } from "@ethersproject/bignumber";
 
 import { IBlockchain } from "@src/constants";
 import { useContracts } from "@src/hooks";
 import { useEventListener } from "@src/hooks/useEventListener";
+import { useStore } from "@src/store";
 import { clamp } from "@src/utils/clamp";
+import { useAccount } from "@src/utils/metamask";
 
 import { BlockRain, BlockType } from "./BlockRain";
 import { Node } from "./Node";
@@ -106,7 +109,9 @@ export const Blockchain: React.FC<Props> = ({ blockchain }) => {
 };
 
 export const CreateBlockchain: React.FC = () => {
+  const { write } = useStore();
   const [isCreating, setCreating] = useState(false);
+  const account = useAccount();
   const contracts = useContracts();
 
   const createBlockchain = async () => {
@@ -115,6 +120,14 @@ export const CreateBlockchain: React.FC = () => {
       setCreating(true);
       const tx = await contracts.gameContract.createBlockchain();
       await tx.wait();
+      const blockchainsIds: BigNumber[] =
+        await contracts.gameContract.callStatic.getUserBlockchains(account);
+
+      write(
+        "blockchainsIds",
+        blockchainsIds.map((id) => id.toNumber())
+      );
+      write("selectedBlockchainId", blockchainsIds[0].toNumber());
     } catch (error) {
       setCreating(false);
     } finally {
@@ -129,7 +142,7 @@ export const CreateBlockchain: React.FC = () => {
           <Spinner />
         ) : (
           <CreateBlockchainButton onClick={createBlockchain}>
-            Create blockchain
+            RUN CHAIN
           </CreateBlockchainButton>
         )}
       </Container>

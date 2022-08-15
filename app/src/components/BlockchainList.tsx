@@ -42,6 +42,10 @@ export const BlockchainList: React.FC = () => {
     write("selectedBlockchainId", id);
   };
 
+  if (store.selectedBlockchainId === undefined) {
+    return null;
+  }
+
   return (
     <Root>
       {store.blockchainsIds
@@ -52,7 +56,6 @@ export const BlockchainList: React.FC = () => {
           </MiniChainCore>
         ))}
       <StyledPlusIcon onClick={createBlockchain} />
-      {/* <MiniChainCore onClick={createBlockchain}>+</MiniChainCore> */}
     </Root>
   );
 };
