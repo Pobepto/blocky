@@ -11,6 +11,7 @@ specifiers:
   '@ethersproject/bignumber': ^5.6.2
   '@ethersproject/contracts': ^5.6.2
   '@ethersproject/providers': ^5.6.8
+  '@types/color-hash': ^1.0.2
   '@types/react': ^18.0.15
   '@types/react-dom': ^18.0.6
   '@typescript-eslint/eslint-plugin': ^5.26.0
@@ -19,6 +20,7 @@ specifiers:
   '@web3-react/core': 8.0.35-beta.0
   '@web3-react/metamask': 8.0.28-beta.0
   '@web3-react/types': 8.0.20-beta.0
+  color-hash: ^2.0.1
   esbuild: '*'
   eslint: ^8.16.0
   eslint-config-prettier: ^8.5.0
@@ -62,11 +64,13 @@ devDependencies:
   '@babel/plugin-transform-react-jsx': 7.18.10_@babel+core@7.18.10
   '@emotion/babel-plugin': 11.10.0_@babel+core@7.18.10
   '@esbuild-plugins/node-globals-polyfill': 0.1.1_esbuild@0.14.54
+  '@types/color-hash': 1.0.2
   '@types/react': 18.0.17
   '@types/react-dom': 18.0.6
   '@typescript-eslint/eslint-plugin': 5.32.0_iosr3hrei2tubxveewluhu5lhy
   '@typescript-eslint/parser': 5.32.0_qugx7qdu5zevzvxaiqyxfiwquq
   '@vitejs/plugin-react': 2.0.0_vite@3.0.4
+  color-hash: 2.0.1
   esbuild: 0.14.54
   eslint: 8.21.0
   eslint-config-prettier: 8.5.0_eslint@8.21.0
@@ -2009,6 +2013,10 @@ packages:
       - supports-color
     dev: true
 
+  /@types/color-hash/1.0.2:
+    resolution: {integrity: sha512-QJCVXSVRse+mMvzWQ8vH6AcKxtqCgHPHf5abAdGn86DEeQdUpSJnKAeCa1+hZuohaUF3l4RhigC9akRx82Bwig==}
+    dev: true
+
   /@types/json-schema/7.0.11:
     resolution: {integrity: sha512-wOuvG1SN4Us4rez+tylwwwCV1psiNVOkJeM3AUWUNWg/jDQY2+HE/444y5gc+jBmRqASOm2Oeh5c1axHobwRKQ==}
     dev: true
@@ -2553,6 +2561,10 @@ packages:
     engines: {node: '>=7.0.0'}
     dependencies:
       color-name: 1.1.4
+    dev: true
+
+  /color-hash/2.0.1:
+    resolution: {integrity: sha512-/wIYAQ3xL9ruURLmDbxAsXEsivaOfwWDUVy+zbWJZL3bnNQIDNSmmqbkNzeTOQvDdiz11Kb010UlJN7hUXLg/w==}
     dev: true
 
   /color-name/1.1.3:

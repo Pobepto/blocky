@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { keyframes } from "@emotion/react";
 import styled from "@emotion/styled";
 
 import { IBlockchain } from "@src/constants";
@@ -147,7 +148,7 @@ const Container = styled.div`
   flex-grow: 1;
 `;
 
-const ChainCore = styled.div`
+export const ChainCore = styled.div`
   width: 200px;
   height: 200px;
   border-radius: 50%;
@@ -164,33 +165,33 @@ const CreateBlockchainButton = styled(ChainCore)`
   cursor: pointer;
 `;
 
-const PulsationCircle = styled.div`
+const pulseRing = keyframes`
+  0% {
+    transform: scale(0.3);
+  }
+  80%,
+  100% {
+    opacity: 0;
+  }
+`;
+
+const pulseDot = keyframes`
+  0% {
+    transform: scale(0.5);
+  }
+  50% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0.5);
+  }
+`;
+
+export const PulsationCircle = styled.div`
   margin: auto;
   width: 180px;
   height: 180px;
   position: relative;
-
-  @keyframes pulse-ring {
-    0% {
-      transform: scale(0.3);
-    }
-    80%,
-    100% {
-      opacity: 0;
-    }
-  }
-
-  @keyframes pulse-dot {
-    0% {
-      transform: scale(0.5);
-    }
-    50% {
-      transform: scale(1);
-    }
-    100% {
-      transform: scale(0.5);
-    }
-  }
 
   &:before {
     content: "";
@@ -203,7 +204,7 @@ const PulsationCircle = styled.div`
     margin-top: -25%;
     border-radius: 50%;
     background-color: ${({ theme }) => theme.colors.yellow};
-    animation: pulse-ring 2.25s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    animation: ${pulseRing} 2.25s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
   }
 
   &:after {
@@ -216,7 +217,7 @@ const PulsationCircle = styled.div`
     height: 100%;
     background-color: ${({ theme }) => theme.colors.yellow};
     border-radius: 50%;
-    animation: pulse-dot 2.25s cubic-bezier(0.455, 0.03, 0.515, 0.955) -0.4s infinite;
+    animation: ${pulseDot} 2.25s cubic-bezier(0.455, 0.03, 0.515, 0.955) -0.4s infinite;
   }
 `;
 

@@ -66,8 +66,8 @@ export interface DApp {
 
 export interface IBlockchain {
   owner: string;
+  color: string;
   liquidity: BigNumber;
-  pendingLiquidity: BigNumber;
   liquidityPerBlock: BigNumber;
   startLiquidityEarnAt: BigNumber;
   tps: BigNumber;

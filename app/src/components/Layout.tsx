@@ -6,6 +6,7 @@ import { ReactComponent as PlusIcon } from "@assets/images/plus.svg";
 import { ReactComponent as QuestionIcon } from "@assets/images/question.svg";
 import { useStore } from "@src/store";
 
+import { BlockchainList } from "./BlockchainList";
 import { Header } from "./Header";
 import { Menu } from "./Menu";
 
@@ -22,6 +23,7 @@ export const Layout: React.FC<Props> = ({ children }) => {
   return (
     <Root>
       <Header />
+      <BlockchainList />
       <Menu close={() => setMenuVisible(false)} isOpen={isMenuVisible} />
       {children}
       {/* TODO: Fix footer block and make it absolute */}

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { BigNumber } from "@ethersproject/bignumber";
 
 import { Blockchain, CreateBlockchain } from "@components/Blockchain";
 import { Layout } from "@components/Layout";
 import { Spinner } from "@src/components/Spinner";
 import { useContracts } from "@src/hooks/useContracts";
 import { useStore } from "@src/store";
+import { getColorFromString } from "@src/utils/getColorFromString";
 import { useAccount, useProvider } from "@src/utils/metamask";
 
 export const Game: React.FC = () => {
@@ -23,7 +25,7 @@ export const Game: React.FC = () => {
         contracts.dbContract.callStatic.getAllDApps(),
       ]);
 
-      const blockchainsIds =
+      const blockchainsIds: BigNumber[] =
         await contracts.gameContract.callStatic.getUserBlockchains(account);
 
       if (blockchainsIds.length) {
@@ -34,7 +36,10 @@ export const Game: React.FC = () => {
         node,
         dapps,
       });
-      write("blockchainsIds", blockchainsIds);
+      write(
+        "blockchainsIds",
+        blockchainsIds.map((id) => id.toNumber())
+      );
 
       setLoading(false);
     };
@@ -56,6 +61,7 @@ export const Game: React.FC = () => {
       write("blockchain", {
         ...blockchain,
         liquidity: blockchain.liquidity.add(pendingLiquiduty),
+        color: getColorFromString(`${account}-${store.selectedBlockchainId}`),
       });
     };
 
