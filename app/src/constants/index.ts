@@ -63,3 +63,15 @@ export interface DApp {
   tps: BigNumber; // количество используемой tps
   liquidityPerBlock: BigNumber; // сколько ликвидности за блок дает
 }
+
+export interface IBlockchain {
+  owner: string;
+  liquidity: BigNumber;
+  pendingLiquidity: BigNumber;
+  liquidityPerBlock: BigNumber;
+  startLiquidityEarnAt: BigNumber;
+  tps: BigNumber;
+  usedTps: BigNumber;
+  nodes: BigNumber;
+  dappsIds: BigNumber[];
+}

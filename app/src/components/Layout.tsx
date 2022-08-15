@@ -4,7 +4,7 @@ import styled from "@emotion/styled";
 import { ReactComponent as ImportantIcon } from "@assets/images/important.svg";
 import { ReactComponent as PlusIcon } from "@assets/images/plus.svg";
 import { ReactComponent as QuestionIcon } from "@assets/images/question.svg";
-import { useTVL } from "@src/hooks/useTVL";
+import { useStore } from "@src/store";
 
 import { Header } from "./Header";
 import { Menu } from "./Menu";
@@ -15,18 +15,27 @@ interface Props {
 
 export const Layout: React.FC<Props> = ({ children }) => {
   const [isMenuVisible, setMenuVisible] = useState(false);
-  const TVL = useTVL();
+  const { store } = useStore();
+
+  const { liquidity, liquidityPerBlock, usedTps, tps } = store.blockchain ?? {};
 
   return (
     <Root>
       <Header />
-      {isMenuVisible && <Menu close={() => setMenuVisible(false)} />}
+      <Menu close={() => setMenuVisible(false)} isOpen={isMenuVisible} />
       {children}
+      {/* TODO: Fix footer block and make it absolute */}
       <Footer>
-        {/* TODO: Fix footer block and make it absolute */}
         <TVLBlock>
-          <span>{TVL.toString()} TVL</span>
+          <span>
+            {liquidity?.toString() ?? "0"} (+
+            {liquidityPerBlock?.toString() ?? "0"}) Liqudity
+          </span>
+          <span>
+            {usedTps?.toString() ?? "0"}/{tps?.toString() ?? "0"} TPS
+          </span>
         </TVLBlock>
+
         <ButtonsBlock>
           <StyledQuestionIcon />
           <StyledImportantIcon />
@@ -51,8 +60,13 @@ const Footer = styled.div`
 
 const TVLBlock = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   user-select: none;
+  flex-direction: column;
+
+  span {
+    margin: 3px 0;
+  }
 `;
 
 const ButtonsBlock = styled.div`

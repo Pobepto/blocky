@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
 
-import { DApp, Node } from "@src/constants";
+import { DApp, IBlockchain, Node } from "@src/constants";
 
 export interface IStore {
   db: {
@@ -8,6 +8,8 @@ export interface IStore {
     dapps?: DApp[];
   };
   blockchainsIds: number[];
+  blockchain?: IBlockchain;
+  selectedBlockchainId?: number;
 }
 
 const initialStore: IStore = {
@@ -33,10 +35,10 @@ export const Store: React.FC<{ children: React.ReactNode }> = ({
   const [store, setStore] = useState(initialStore);
 
   const write = <T extends keyof IStore>(key: T, value: IStore[T]) => {
-    setStore({
+    setStore((store) => ({
       ...store,
       [key]: value,
-    });
+    }));
   };
 
   return (

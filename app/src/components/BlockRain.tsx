@@ -48,17 +48,20 @@ export const Block: React.FC<Props> = ({
   return <Image duration={duration} reverse={reverse} src={currentImage} />;
 };
 
-export const BlockRain: React.FC<RainProps> = ({ colors, reverse }) => {
-  const blocks = 9;
+// eslint-disable-next-line react/display-name
+export const BlockRain: React.FC<RainProps> = React.memo(
+  ({ colors, reverse }) => {
+    const blocks = 9;
 
-  return (
-    <Root>
-      {Array.from(Array(blocks), (_, index) => (
-        <Block key={index} colors={colors} reverse={reverse} />
-      ))}
-    </Root>
-  );
-};
+    return (
+      <Root>
+        {Array.from(Array(blocks), (_, index) => (
+          <Block key={index} colors={colors} reverse={reverse} />
+        ))}
+      </Root>
+    );
+  }
+);
 
 const Root = styled.div`
   display: flex;

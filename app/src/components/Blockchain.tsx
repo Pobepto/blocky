@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import styled from "@emotion/styled";
 
+import { IBlockchain } from "@src/constants";
 import { useContracts } from "@src/hooks";
-import { useBlockchain } from "@src/hooks/useBlockchain";
+import { useEventListener } from "@src/hooks/useEventListener";
 import { clamp } from "@src/utils/clamp";
 
 import { BlockRain, BlockType } from "./BlockRain";
@@ -11,7 +12,7 @@ import { OffsetBlock } from "./OffsetBlock";
 import { Spinner } from "./Spinner";
 
 interface Props {
-  id: number;
+  blockchain: IBlockchain;
 }
 
 let zoom = 1;
@@ -19,40 +20,38 @@ const zoomStep = 0.025;
 const zoomInLimit = 1;
 const zoomOutLimit = 0.5;
 
+const colors = [
+  BlockType.BLUE,
+  BlockType.GREEN,
+  BlockType.ORANGE,
+  BlockType.RED,
+  BlockType.YELLOW,
+];
+
 const randomDuration = () => 1 + Math.random();
 
-export const Blockchain: React.FC<Props> = ({ id }) => {
-  const { blockchain, isLoading } = useBlockchain(id);
-
+export const Blockchain: React.FC<Props> = ({ blockchain }) => {
   const chainRef = useRef<HTMLDivElement>(null);
 
-  const nodesAmount = blockchain ? blockchain.nodes.toNumber() : 0;
+  const nodesAmount = blockchain.nodes.toNumber();
 
   const half = nodesAmount / 2;
   const leftHalf = Math.floor(half);
   const rightHalf = Math.ceil(half);
 
-  useEffect(() => {
-    const handleWheel = (e: WheelEvent) => {
-      if (!chainRef.current) return;
+  useEventListener("wheel", (e: WheelEvent) => {
+    if (!chainRef.current) return;
 
-      if (e.deltaY > 0) {
-        zoom = zoom - zoomStep;
-      } else {
-        zoom = zoom + zoomStep;
-      }
+    if (e.deltaY > 0) {
+      zoom = zoom - zoomStep;
+    } else {
+      zoom = zoom + zoomStep;
+    }
 
-      zoom = clamp(zoom, zoomOutLimit, zoomInLimit);
+    zoom = clamp(zoom, zoomOutLimit, zoomInLimit);
 
-      chainRef.current.style.transform = `scale(${zoom})`;
-    };
-
-    document.addEventListener("wheel", handleWheel);
-
-    return () => {
-      document.removeEventListener("wheel", handleWheel);
-    };
-  }, []);
+    chainRef.current.style.transform = `scale(${zoom})`;
+  });
 
   const renderNodes = (amount: number, position: "left" | "right") => {
     const reverse = position === "left" ? -1 : 1;
@@ -83,14 +82,6 @@ export const Blockchain: React.FC<Props> = ({ id }) => {
     });
   };
 
-  if (isLoading) {
-    return (
-      <Root>
-        <Spinner />
-      </Root>
-    );
-  }
-
   return (
     <Root>
       <Container ref={chainRef}>
@@ -101,16 +92,7 @@ export const Blockchain: React.FC<Props> = ({ id }) => {
           <PulsationCircle />
         </ChainCore>
         <OffsetBlock left={0} top={250}>
-          <BlockRain
-            colors={[
-              BlockType.BLUE,
-              BlockType.GREEN,
-              BlockType.ORANGE,
-              BlockType.RED,
-              BlockType.YELLOW,
-            ]}
-            reverse
-          />
+          <BlockRain colors={colors} reverse />
         </OffsetBlock>
         {renderNodes(leftHalf, "left")}
         {renderNodes(rightHalf, "right")}
