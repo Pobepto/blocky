@@ -46,7 +46,7 @@ contract CryptoBoxDB {
       kind: DAPP_KIND.DEFI_DEX,
       price: 100,
       tps: 1,
-      liquidityPerBlock: 1
+      liquidityPerBlock: 100
     }));
   }
 

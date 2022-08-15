@@ -6,6 +6,7 @@ import "./CryptoBoxDB.sol";
 
 contract CryptoBox is Ownable {
   struct Blockchain {
+    uint id;
     address owner;
     uint liquidity; // total liquidity of the blockchain
     uint liquidityPerBlock; // liquidity per block
@@ -17,6 +18,7 @@ contract CryptoBox is Ownable {
   }
 
   mapping (address => uint[]) private _userBlockchains; // user_address -> blockchain_id[]
+  mapping (uint => mapping (uint => uint)) private _blockchainDAppsAmounts; // blockchain_id -> dapp_id -> amount
   Blockchain[] private _blockchains;
 
   CryptoBoxDB private _db;
@@ -28,18 +30,19 @@ contract CryptoBox is Ownable {
   function createBlockchain() external {
     CryptoBoxDB.NodeData memory NODE_DATA = _db.getNode();
 
+    uint blockchainId = _blockchains.length;
+
     _blockchains.push(Blockchain({
+      id: blockchainId,
       owner: msg.sender,
-      liquidity: 10,
-      liquidityPerBlock: 0,
+      liquidity: 1000,
+      liquidityPerBlock: 10,
       startLiquidityEarnAt: block.number,
       tps: NODE_DATA.tps,
       usedTps: 0,
       nodes: 1,
       dappsIds: new uint[](0)
     }));
-    
-    uint blockchainId = _blockchains.length - 1;
 
     if (_userBlockchains[msg.sender].length != 0) {
       // TODO: если это уже не первый блокчейн этого пользователя то делать создание платным
@@ -48,18 +51,29 @@ contract CryptoBox is Ownable {
     _userBlockchains[msg.sender].push(blockchainId);
   }
 
-  function buyNode(uint blockchainId) external {
+  function buy(uint blockchainId, uint nodes, uint[] calldata dapps, uint[] calldata dappsAmounts) external {
     Blockchain storage blockchain = _safeGetBlockchain(blockchainId);
 
-    uint nodes = blockchain.nodes;
+    require(dapps.length == dappsAmounts, "");
+
+    if (nodes > 0) {
+      _buyNodes(blockchain, nodes);
+    }
+
+    if (dapps.length) {
+      _buyDapps(blockchain, dapps, dappsAmounts);
+    }
+  }
+
+  function _buyNode(Blockchain storage blockchain, uint amount) internal {
+    uint currentNodes = blockchain.nodes;
 
     // TODO: какой будет лимит на количество нод, можно ли его прокачать?
-    require(nodes < 22, "You can't buy more than 22 nodes");
+    // require(currentNodes + amount < 22, "You can't buy more than 22 nodes");
 
     CryptoBoxDB.NodeData memory NODE_DATA = _db.getNode();
 
-    // TODO: супер тупая формула, но в будущем нужно будет сделать так, чтобы покупка следующей ноды была дороже предыдущей
-    uint price = NODE_DATA.price * nodes;
+    uint price = cumulativeCost(NODE_DATA.price, currentNodes, currentNodes + amount);
 
     uint totalLiqudity = blockchain.liquidity + _getBlockchainPendingLiquidity(blockchain);
 
@@ -67,24 +81,45 @@ contract CryptoBox is Ownable {
 
     blockchain.liquidity = totalLiqudity - price;
     blockchain.startLiquidityEarnAt = block.number;
-    blockchain.tps += NODE_DATA.tps;
-    blockchain.nodes += 1;
+    blockchain.tps += NODE_DATA.tps * amount;
+    blockchain.nodes += amount;
   }
 
-  function buyDApp(uint blockchainId, uint dappId) external {
-    Blockchain storage blockchain = _safeGetBlockchain(blockchainId);
-    CryptoBoxDB.DAppData memory DAPP_DATA = _db.getDAppById(dappId);
-
+  function _buyDapps(Blockchain storage blockchain, uint[] calldata dapps, uint[] calldata dappsAmounts) internal {
     uint totalLiqudity = blockchain.liquidity + _getBlockchainPendingLiquidity(blockchain);
 
-    require(totalLiqudity >= DAPP_DATA.price, "Not enough liquidity");
-    require((blockchain.tps - blockchain.usedTps) >= DAPP_DATA.tps, "Not enough tps");
+    uint totalPrice = 0;
+    uint totalLiquidityPerBlock = 0;
+    uint totalTps = 0;
 
-    blockchain.liquidity = totalLiqudity - DAPP_DATA.price;
-    blockchain.liquidityPerBlock += DAPP_DATA.liquidityPerBlock;
+    for (uint i; i < dapps.length; i++) {
+      uint dappId = dapps[i];
+      CryptoBoxDB.DAppData memory DAPP_DATA = _db.getDAppById(dappId);
+      uint amount = dappsAmounts[i];
+      uint currentAmount = _blockchainDAppsAmounts[blockchain.id][dappId];
+
+      totalPrice += cumulativeCost(DAPP_DATA.price, currentAmount, currentAmount + amount);
+      totalLiquidityPerBlock += DAPP_DATA.liquidityPerBlock * amount;
+      totalTps += DAPP_DATA.tps * amount;
+      _blockchainDAppsAmounts[blockchain.id][dappId] += amount;
+
+      // suk govno
+      for (uint j; j < amount; j++) {
+        blockchain.dappsIds.push(dappId);
+      }
+    }
+
+    require(totalLiqudity >= totalPrice, "Not enough liquidity");
+    require((blockchain.tps - blockchain.usedTps) >= totalTps, "Not enough tps");
+
+    blockchain.liquidity = totalLiqudity - totalPrice;
+    blockchain.liquidityPerBlock += totalLiquidityPerBlock;
     blockchain.startLiquidityEarnAt = block.number;
-    blockchain.usedTps += DAPP_DATA.tps;
-    blockchain.dappsIds.push(dappId);
+    blockchain.usedTps += totalTps;
+  }
+
+  function cumulativeCost(uint baseCost, uint currentAmount, uint newAmount) internal view returns (uint) {
+    return (baseCost * (115**newAmount - 115**currentAmount)) / 15;
   }
 
   // onlyOwner methods

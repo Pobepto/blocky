@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "@emotion/styled";
 import { BigNumber } from "@ethersproject/bignumber";
 
+import { ReactComponent as PlusIcon } from "@assets/images/plus.svg";
 import { useContracts } from "@src/hooks";
 import { useStore } from "@src/store";
 import { useAccount } from "@src/utils/metamask";
@@ -12,20 +13,29 @@ export const BlockchainList: React.FC = () => {
   const { store, write } = useStore();
   const contracts = useContracts();
   const account = useAccount();
+  const [isCreating, setCreating] = useState(false);
 
   const createBlockchain = async () => {
-    if (!contracts) return;
+    if (!contracts || isCreating) return;
 
-    const tx = await contracts.gameContract.createBlockchain();
-    await tx.wait();
+    setCreating(true);
 
-    const blockchainsIds: BigNumber[] =
-      await contracts.gameContract.callStatic.getUserBlockchains(account);
+    try {
+      const tx = await contracts.gameContract.createBlockchain();
+      await tx.wait();
 
-    write(
-      "blockchainsIds",
-      blockchainsIds.map((id) => id.toNumber())
-    );
+      const blockchainsIds: BigNumber[] =
+        await contracts.gameContract.callStatic.getUserBlockchains(account);
+
+      write(
+        "blockchainsIds",
+        blockchainsIds.map((id) => id.toNumber())
+      );
+    } catch (error) {
+      setCreating(false);
+    } finally {
+      setCreating(false);
+    }
   };
 
   const selectBlockchain = (id: number) => {
@@ -41,7 +51,8 @@ export const BlockchainList: React.FC = () => {
             <PulsationCircle />
           </MiniChainCore>
         ))}
-      <MiniChainCore onClick={createBlockchain}>+</MiniChainCore>
+      <StyledPlusIcon onClick={createBlockchain} />
+      {/* <MiniChainCore onClick={createBlockchain}>+</MiniChainCore> */}
     </Root>
   );
 };
@@ -73,5 +84,14 @@ const MiniChainCore = styled(ChainCore)`
   ${PulsationCircle} {
     width: 80px;
     height: 80px;
+  }
+`;
+
+const StyledPlusIcon = styled(PlusIcon)`
+  cursor: pointer;
+  transition: transform 0.4s ease-in-out;
+
+  :hover {
+    transform: rotate(360deg);
   }
 `;

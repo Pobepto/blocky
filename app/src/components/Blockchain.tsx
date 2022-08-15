@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { keyframes } from "@emotion/react";
 import styled from "@emotion/styled";
 
@@ -21,14 +21,6 @@ const zoomStep = 0.025;
 const zoomInLimit = 1;
 const zoomOutLimit = 0.5;
 
-const colors = [
-  BlockType.BLUE,
-  BlockType.GREEN,
-  BlockType.ORANGE,
-  BlockType.RED,
-  BlockType.YELLOW,
-];
-
 const randomDuration = () => 1 + Math.random();
 
 export const Blockchain: React.FC<Props> = ({ blockchain }) => {
@@ -39,6 +31,17 @@ export const Blockchain: React.FC<Props> = ({ blockchain }) => {
   const half = nodesAmount / 2;
   const leftHalf = Math.floor(half);
   const rightHalf = Math.ceil(half);
+
+  const colors = useMemo(
+    () => [
+      BlockType.BLUE,
+      BlockType.GREEN,
+      BlockType.ORANGE,
+      BlockType.RED,
+      BlockType.YELLOW,
+    ],
+    []
+  );
 
   useEventListener("wheel", (e: WheelEvent) => {
     if (!chainRef.current) return;
