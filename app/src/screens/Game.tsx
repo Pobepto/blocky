@@ -12,7 +12,8 @@ import { Menu } from "@src/components/Menu";
 import { Spinner } from "@src/components/Spinner";
 import { useContracts } from "@src/hooks/useContracts";
 import { useStore } from "@src/store";
-import { getColorFromString } from "@src/utils/getColorFromString";
+import { BN } from "@src/utils/BN";
+import { getColorFromIndex } from "@src/utils/getColorFromIndex";
 import { useAccount, useProvider } from "@src/utils/metamask";
 
 export const Game: React.FC = () => {
@@ -58,17 +59,20 @@ export const Game: React.FC = () => {
     if (store.selectedBlockchainId === undefined) return;
 
     const loadBlockchain = async () => {
-      console.log("load blockchain");
       // TODO: Fix typo in contract
       const { blockchain, pendingLiquiduty } =
         await contracts.gameContract.callStatic.getBlockchain(
           store.selectedBlockchainId
         );
 
+      const localBlockchainIndex = store.blockchainsIds.findIndex(
+        (id) => id === blockchain.id.toNumber()
+      );
+
       write("blockchain", {
         ...blockchain,
         liquidity: blockchain.liquidity.add(pendingLiquiduty),
-        color: getColorFromString(`${account}-${store.selectedBlockchainId}`),
+        color: getColorFromIndex(localBlockchainIndex),
       });
     };
 
@@ -114,8 +118,8 @@ export const Game: React.FC = () => {
       <Footer>
         <TVLBlock>
           <span>
-            {liquidity?.div(100).toString() ?? "0"} (+
-            {liquidityPerBlock?.div(100).toString() ?? "0"}) Liqudity
+            {BN.formatUnits(liquidity, 2).toString() ?? "0"} (+
+            {BN.formatUnits(liquidityPerBlock, 2).toString() ?? "0"}) Liquidity
           </span>
           <span>
             {usedTps?.toString() ?? "0"}/{tps?.toString() ?? "0"} TPS

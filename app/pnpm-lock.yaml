@@ -20,6 +20,7 @@ specifiers:
   '@web3-react/core': 8.0.35-beta.0
   '@web3-react/metamask': 8.0.28-beta.0
   '@web3-react/types': 8.0.20-beta.0
+  bignumber.js: ^9.1.0
   color-hash: ^2.0.1
   esbuild: '*'
   eslint: ^8.16.0
@@ -53,6 +54,7 @@ dependencies:
   '@web3-react/core': 8.0.35-beta.0_react@18.2.0
   '@web3-react/metamask': 8.0.28-beta.0_react@18.2.0
   '@web3-react/types': 8.0.20-beta.0_react@18.2.0
+  bignumber.js: 9.1.0
   normalize.css: 8.0.1
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
@@ -2452,6 +2454,10 @@ packages:
 
   /bech32/1.1.4:
     resolution: {integrity: sha512-s0IrSOzLlbvX7yp4WBfPITzpAU8sqQcpsmwXDiKwrG4r491vwCO/XpejasRNl0piBMe/DvP4Tz0mIS/X1DPJBQ==}
+    dev: false
+
+  /bignumber.js/9.1.0:
+    resolution: {integrity: sha512-4LwHK4nfDOraBCtst+wOWIHbu1vhvAPJK8g8nROd4iuc3PSEjWif/qwbkh8jwCJz6yDBvtU4KPynETgrfh7y3A==}
     dev: false
 
   /binary-extensions/2.2.0:

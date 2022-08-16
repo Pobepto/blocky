@@ -48,7 +48,7 @@ const Root = styled.div`
 const LogoBlock = styled.div`
   width: 160px;
   cursor: pointer;
-  color: ${({ theme }) => theme.colors.red};
+  color: ${({ theme }) => theme.color};
 `;
 const MenuBlock = styled.div`
   display: grid;
@@ -68,7 +68,7 @@ const MenuItem = styled.span`
     position: relative;
     top: 5px;
     content: "";
-    border-bottom: solid 3px ${({ theme }) => theme.colors.red};
+    border-bottom: solid 3px ${({ theme }) => theme.color};
     transform: scaleX(0);
     transition: transform 250ms ease-in-out;
   }
@@ -91,7 +91,7 @@ const AddressBlock = styled.div`
     position: relative;
     top: 5px;
     content: "";
-    border-bottom: solid 3px ${({ theme }) => theme.colors.red};
+    border-bottom: solid 3px ${({ theme }) => theme.color};
     transform: scaleX(0);
     transition: transform 250ms ease-in-out;
   }

@@ -9,11 +9,13 @@ import { DAPP_GROUP } from "@src/constants";
 import { useContracts, useKeyPress } from "@src/hooks";
 import { useOnClickOutside } from "@src/hooks/useOnClickOutside";
 import { useStore } from "@src/store";
+import { BN } from "@src/utils/BN";
 import { clamp } from "@src/utils/clamp";
 
 interface ItemProps {
   icon: React.FC;
   title: string;
+  initialCount: number;
   count: number;
   onIncrease: () => void;
   onDecrease: () => void;
@@ -22,15 +24,18 @@ interface ItemProps {
 const Item: React.FC<ItemProps> = ({
   icon: Icon,
   title,
+  initialCount,
   count,
   onIncrease,
   onDecrease,
 }) => {
+  const isChanged = initialCount !== count;
+
   return (
     <ItemRoot>
       <Icon />
       <span style={{ fontSize: "12px" }}>{title}</span>
-      <CounterBlock>
+      <CounterBlock isChanged={isChanged}>
         <span onClick={onDecrease}>-</span>
         <span>{count}</span>
         <span onClick={onIncrease}>+</span>
@@ -47,7 +52,7 @@ const ItemRoot = styled.div`
   gap: 20px;
 `;
 
-const CounterBlock = styled.div`
+const CounterBlock = styled.div<{ isChanged: boolean }>`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -58,8 +63,13 @@ const CounterBlock = styled.div`
   > span:nth-of-type(3) {
     cursor: pointer;
     :hover {
-      color: ${({ theme }) => theme.colors.yellow};
+      color: ${({ theme }) => theme.color};
     }
+  }
+
+  > span:nth-of-type(2) {
+    color: ${({ theme, isChanged }) =>
+      isChanged ? theme.color : theme.colors.white};
   }
 `;
 
@@ -88,16 +98,21 @@ const cumulativeCost = (
   currentAmount: number,
   newAmount: number
 ) => {
-  const a = BigNumber.from(115)
-    .pow(currentAmount)
-    .div(BigNumber.from(100).pow(currentAmount - 1));
   const b = BigNumber.from(115)
     .pow(newAmount)
     .div(BigNumber.from(100).pow(newAmount - 1));
 
+  if (currentAmount === 0) {
+    return baseCost.mul(b.sub(100)).div(15);
+  }
+
   if (currentAmount === 1) {
     return baseCost.mul(b.sub(BigNumber.from(115).pow(currentAmount))).div(15);
   }
+
+  const a = BigNumber.from(115)
+    .pow(currentAmount)
+    .div(BigNumber.from(100).pow(currentAmount - 1));
 
   return baseCost.mul(b.sub(a)).div(15);
 };
@@ -130,6 +145,7 @@ export const Menu: React.FC<Props> = ({ close, isOpen }) => {
   };
 
   const onIncrease = (key: keyof Cart) => () => {
+    console.log("isShiftPressed", isShiftPressed);
     const value = isShiftPressed ? 10 : 1;
     const base = cart[key] ?? 0;
     setCart((cart) => ({ ...cart, [key]: base + value }));
@@ -148,8 +164,7 @@ export const Menu: React.FC<Props> = ({ close, isOpen }) => {
     const blockchainId = store.selectedBlockchainId!;
 
     const nodes = cart.nodes! - baseCart.current.nodes!;
-    const dapps: number[] = [];
-    const dappsAmounts: number[] = [];
+    const { dapps, dappsAmounts } = getDappsFromCart();
 
     const tx = await gameContract!.buy(
       blockchainId,
@@ -161,12 +176,55 @@ export const Menu: React.FC<Props> = ({ close, isOpen }) => {
     baseCart.current = cart;
   };
 
-  const nodeBasePrice = node?.price ?? BigNumber.from(0);
-  const total = cumulativeCost(
-    nodeBasePrice,
-    baseCart.current?.nodes ?? 1,
-    cart?.nodes ?? 1
-  );
+  const getDappsFromCart = () => {
+    const dapps = [];
+    const dappsAmounts = [];
+
+    for (const [dappId, amount] of Object.entries(cart)) {
+      if (dappId === "nodes" || baseCart.current[dappId] === amount) continue;
+
+      const buyAmount = amount! - (baseCart.current[dappId] ?? 0);
+
+      dapps.push(dappId);
+      dappsAmounts.push(buyAmount);
+    }
+
+    return {
+      dapps,
+      dappsAmounts,
+    };
+  };
+
+  const calculateTotalCost = () => {
+    const nodeBasePrice = node?.price ?? BigNumber.from(0);
+    const totalNodeCost = cumulativeCost(
+      nodeBasePrice,
+      baseCart.current?.nodes ?? 1,
+      cart?.nodes ?? 1
+    );
+
+    const { dapps } = getDappsFromCart();
+
+    let totalDappsCost = BigNumber.from(0);
+
+    for (const dappId of dapps) {
+      const dappData = store.db.dapps!.find(
+        (dapp) => dapp.group === parseInt(dappId)
+      );
+
+      const baseDappPrice = dappData?.price ?? BigNumber.from(0);
+      const dappPrice = cumulativeCost(
+        baseDappPrice,
+        baseCart.current[dappId] ?? 1,
+        cart[dappId] ?? 1
+      );
+      totalDappsCost = totalDappsCost.add(dappPrice);
+    }
+
+    return totalNodeCost.add(totalDappsCost);
+  };
+
+  const total = calculateTotalCost();
 
   return (
     <Root ref={menuRef} isOpen={isOpen}>
@@ -178,6 +236,7 @@ export const Menu: React.FC<Props> = ({ close, isOpen }) => {
             key={`${dapp.group}${dapp.kind}`}
             count={cart[dapp.group] ?? 0}
             icon={DAppsIcons[dapp.group]}
+            initialCount={baseCart.current[dapp.group] ?? 0}
             title={DAppsTitles[dapp.group]}
             onDecrease={onDecrease(dapp.group)}
             onIncrease={onIncrease(dapp.group)}
@@ -187,6 +246,7 @@ export const Menu: React.FC<Props> = ({ close, isOpen }) => {
         <Item
           count={cart.nodes ?? 0}
           icon={NodeSVG}
+          initialCount={baseCart.current.nodes ?? 0}
           title="Node"
           onDecrease={onDecrease("nodes")}
           onIncrease={onIncrease("nodes")}
@@ -194,7 +254,7 @@ export const Menu: React.FC<Props> = ({ close, isOpen }) => {
       </Content>
       <div>
         <span>Total:</span>
-        <span>{total.div(100).toString()}</span>
+        <span>{BN.formatUnits(total, 2).toString()}</span>
       </div>
       <Footer>
         <span onClick={() => onClose()}>CANCEL</span>
@@ -211,7 +271,7 @@ const Root = styled.div<{ isOpen: boolean }>`
   flex-direction: column;
   width: 550px;
   height: 100vh;
-  border-left: 2px solid ${({ theme }) => theme.colors.yellow};
+  border-left: 2px solid ${({ theme }) => theme.color};
   background: #00000099;
   top: 0;
   right: 0;
@@ -245,7 +305,7 @@ const Footer = styled.div`
   > span {
     cursor: pointer;
     :hover {
-      color: ${({ theme }) => theme.colors.yellow};
+      color: ${({ theme }) => theme.color};
     }
   }
 `;

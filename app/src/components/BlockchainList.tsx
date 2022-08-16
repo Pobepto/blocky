@@ -5,6 +5,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { ReactComponent as PlusIcon } from "@assets/images/plus.svg";
 import { useContracts } from "@src/hooks";
 import { useStore } from "@src/store";
+import { getColorFromIndex } from "@src/utils/getColorFromIndex";
 import { useAccount } from "@src/utils/metamask";
 
 import { ChainCore, PulsationCircle } from "./Blockchain";
@@ -50,11 +51,22 @@ export const BlockchainList: React.FC = () => {
     <Root>
       {store.blockchainsIds
         .filter((id) => id !== store.selectedBlockchainId)
-        .map((id) => (
-          <MiniChainCore key={id} onClick={() => selectBlockchain(id)}>
-            <PulsationCircle />
-          </MiniChainCore>
-        ))}
+        .map((id) => {
+          const localBlockchainIndex = store.blockchainsIds.findIndex(
+            (_id) => _id === id
+          );
+          const color = getColorFromIndex(localBlockchainIndex);
+
+          return (
+            <MiniChainCore
+              key={id}
+              color={color}
+              onClick={() => selectBlockchain(id)}
+            >
+              <PulsationCircle />
+            </MiniChainCore>
+          );
+        })}
       <StyledPlusIcon onClick={createBlockchain} />
     </Root>
   );
@@ -71,7 +83,7 @@ const Root = styled.div`
   left: 50px;
 `;
 
-const MiniChainCore = styled(ChainCore)`
+const MiniChainCore = styled(ChainCore)<{ color: string }>`
   border: 2px solid #fff;
   width: 90px;
   height: 90px;
@@ -87,6 +99,14 @@ const MiniChainCore = styled(ChainCore)`
   ${PulsationCircle} {
     width: 80px;
     height: 80px;
+
+    &:before {
+      background-color: ${({ color }) => color};
+    }
+
+    &:after {
+      background-color: ${({ color }) => color};
+    }
   }
 `;
 

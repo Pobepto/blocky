@@ -7,6 +7,7 @@ import greenImg from "@assets/game/block/GreenBlock.svg";
 import orangeImg from "@assets/game/block/OrangeBlock.svg";
 import redImg from "@assets/game/block/RedBlock.svg";
 import yellowImg from "@assets/game/block/YellowBlock.svg";
+import { DappIds } from "@src/constants";
 
 export enum BlockType {
   DEFAULT,
@@ -26,6 +27,10 @@ interface RainProps {
   colors?: BlockType[];
   reverse?: boolean;
 }
+
+export const MAP_IDS_TYPE: Record<DappIds, BlockType> = {
+  [0]: BlockType.YELLOW,
+};
 
 const MAP_COLOR_IMG = {
   [BlockType.DEFAULT]: defaultImg,

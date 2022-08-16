@@ -61,6 +61,8 @@ contract CryptoBox is Ownable {
     if (dapps.length > 0) {
       _buyDapps(blockchain, dapps, dappsAmounts);
     }
+
+    blockchain.startLiquidityEarnAt = block.number;
   }
 
   function _buyNodes(Blockchain storage blockchain, uint amount) internal {
@@ -78,7 +80,6 @@ contract CryptoBox is Ownable {
     require(totalLiqudity >= price, "Not enough liquidity");
 
     blockchain.liquidity = totalLiqudity - price;
-    blockchain.startLiquidityEarnAt = block.number;
     blockchain.tps += NODE_DATA.tps * amount;
     blockchain.nodes += amount;
   }
@@ -112,17 +113,21 @@ contract CryptoBox is Ownable {
 
     blockchain.liquidity = totalLiqudity - totalPrice;
     blockchain.liquidityPerBlock += totalLiquidityPerBlock;
-    blockchain.startLiquidityEarnAt = block.number;
     blockchain.usedTps += totalTps;
   }
 
   function cumulativeCost(uint baseCost, uint currentAmount, uint newAmount) internal view returns (uint) {
-    uint a = (115**currentAmount) / (100**(currentAmount - 1));
     uint b = (115**newAmount) / (100**(newAmount - 1));
+
+    if (currentAmount == 0) {
+      return (baseCost * (b - 100)) / 15;
+    }
     
     if (currentAmount == 1) {
       return (baseCost * (b - 115**currentAmount)) / 15;
     }
+
+    uint a = (115**currentAmount) / (100**(currentAmount - 1));
 
     return (baseCost * (b - a)) / 15;
   }
@@ -143,9 +148,7 @@ contract CryptoBox is Ownable {
   }
 
   function _getBlockchainPendingLiquidity(Blockchain memory blockchain) private view returns (uint) {
-    uint earnedLiqudiity = (block.number - blockchain.startLiquidityEarnAt) * blockchain.liquidityPerBlock;
-
-    return blockchain.liquidity + earnedLiqudiity;
+    return (block.number - blockchain.startLiquidityEarnAt) * blockchain.liquidityPerBlock;
   }
 
   // public view methods

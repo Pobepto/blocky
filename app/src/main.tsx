@@ -17,8 +17,8 @@ const connectors: [MetaMask, Web3ReactHooks][] = [[metaMask, hooks]];
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <Web3ReactProvider connectors={connectors}>
-      <ThemeWrapper>
-        <Store>
+      <Store>
+        <ThemeWrapper>
           <BrowserRouter>
             <Routes>
               {/* <Route element={<Auth />} path="/" /> */}
@@ -41,8 +41,8 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
               <Route element={<Navigate to="/" />} path="*" />
             </Routes>
           </BrowserRouter>
-        </Store>
-      </ThemeWrapper>
+        </ThemeWrapper>
+      </Store>
     </Web3ReactProvider>
   </React.StrictMode>
 );

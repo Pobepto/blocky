@@ -33,13 +33,15 @@ export const CHAIN_PARAMS: AddEthereumChainParameter = isDev
 export const CONTRACTS = {
   GAME: {
     ABI: GAME_ABI,
-    ADDRESS: "0x8925bd28a373aDC983ed0Db0101D9AC85D6a54fb",
+    ADDRESS: "0x7e2Bf467be519546998D28d154FeaCd66F28c526",
   },
   DB: {
     ABI: DB_ABI,
-    ADDRESS: "0x670f7667D919Cd8baC2217a988Df82Fa865d38BF",
+    ADDRESS: "0xfC3397973F84A1D4FFD93B91266F6A6eDFBd4a13",
   },
 };
+
+export type DappIds = 0;
 
 export enum DAPP_GROUP {
   DEFI,

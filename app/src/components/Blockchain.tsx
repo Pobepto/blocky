@@ -3,14 +3,14 @@ import { keyframes } from "@emotion/react";
 import styled from "@emotion/styled";
 import { BigNumber } from "@ethersproject/bignumber";
 
-import { IBlockchain } from "@src/constants";
+import { DappIds, IBlockchain } from "@src/constants";
 import { useContracts } from "@src/hooks";
 import { useEventListener } from "@src/hooks/useEventListener";
 import { useStore } from "@src/store";
 import { clamp } from "@src/utils/clamp";
 import { useAccount } from "@src/utils/metamask";
 
-import { BlockRain, BlockType } from "./BlockRain";
+import { BlockRain, BlockType, MAP_IDS_TYPE } from "./BlockRain";
 import { Node } from "./Node";
 import { OffsetBlock } from "./OffsetBlock";
 import { Spinner } from "./Spinner";
@@ -31,20 +31,17 @@ export const Blockchain: React.FC<Props> = ({ blockchain }) => {
 
   const nodesAmount = blockchain.nodes.toNumber();
 
-  const half = nodesAmount / 2;
-  const leftHalf = Math.floor(half);
-  const rightHalf = Math.ceil(half);
+  const colors = useMemo(() => {
+    if (!blockchain.dappsIds.length) {
+      return [BlockType.DEFAULT];
+    }
 
-  const colors = useMemo(
-    () => [
-      BlockType.BLUE,
-      BlockType.GREEN,
-      BlockType.ORANGE,
-      BlockType.RED,
-      BlockType.YELLOW,
-    ],
-    []
-  );
+    return [
+      ...new Set(
+        blockchain.dappsIds.map((id) => MAP_IDS_TYPE[id.toNumber() as DappIds])
+      ),
+    ];
+  }, [blockchain.dappsIds.length]);
 
   useEventListener("wheel", (e: WheelEvent) => {
     if (!chainRef.current) return;
@@ -60,20 +57,26 @@ export const Blockchain: React.FC<Props> = ({ blockchain }) => {
     chainRef.current.style.transform = `scale(${zoom})`;
   });
 
-  const renderNodes = (amount: number, position: "left" | "right") => {
+  const renderNodes = (
+    amount: number,
+    position: "left" | "right",
+    dappsIds: BigNumber[]
+  ) => {
     const reverse = position === "left" ? -1 : 1;
+    const dappsPerNode = Math.ceil(dappsIds.length / amount);
 
     return Array.from(Array(amount)).map((_, index) => {
       const nodeLeftOffset = (275 + index * 125) * reverse;
       const lineWidth = index === 0 ? 115 : 45;
       const lineLeftOffset = (lineWidth / 2 + 40) * -reverse;
 
+      const nodeDapps = dappsIds
+        .slice(index, index + dappsPerNode)
+        .filter(Boolean);
+
       return (
         <OffsetBlock key={index} left={nodeLeftOffset} top={0}>
-          <Node
-            dapps={Array.from(Array(amount - index))}
-            reverse={index % 2 === 0}
-          />
+          <Node dapps={nodeDapps} reverse={index % 2 === 0} />
           <OffsetBlock left={lineLeftOffset} top={-5}>
             <HorizontalLine duration={randomDuration} width={lineWidth} />
           </OffsetBlock>
@@ -89,6 +92,14 @@ export const Blockchain: React.FC<Props> = ({ blockchain }) => {
     });
   };
 
+  const half = nodesAmount / 2;
+  const leftHalf = Math.floor(half);
+  const rightHalf = Math.ceil(half);
+
+  const middleIndex = Math.ceil(blockchain.dappsIds.length / 2);
+  const dappsIdsLeft = blockchain.dappsIds.slice().splice(0, middleIndex);
+  const dappsIdsRight = blockchain.dappsIds.slice().splice(-middleIndex);
+
   return (
     <Root>
       <Container ref={chainRef}>
@@ -101,8 +112,8 @@ export const Blockchain: React.FC<Props> = ({ blockchain }) => {
         <OffsetBlock left={0} top={250}>
           <BlockRain colors={colors} reverse />
         </OffsetBlock>
-        {renderNodes(leftHalf, "left")}
-        {renderNodes(rightHalf, "right")}
+        {renderNodes(leftHalf, "left", dappsIdsLeft)}
+        {renderNodes(rightHalf, "right", dappsIdsRight)}
       </Container>
     </Root>
   );
@@ -219,7 +230,7 @@ export const PulsationCircle = styled.div`
     margin-left: -25%;
     margin-top: -25%;
     border-radius: 50%;
-    background-color: ${({ theme }) => theme.colors.yellow};
+    background-color: ${({ theme }) => theme.color};
     animation: ${pulseRing} 2.25s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
   }
 
@@ -231,7 +242,7 @@ export const PulsationCircle = styled.div`
     display: block;
     width: 100%;
     height: 100%;
-    background-color: ${({ theme }) => theme.colors.yellow};
+    background-color: ${({ theme }) => theme.color};
     border-radius: 50%;
     animation: ${pulseDot} 2.25s cubic-bezier(0.455, 0.03, 0.515, 0.955) -0.4s infinite;
   }
@@ -276,8 +287,7 @@ const HorizontalLine = styled.div<{
     width: 6px;
     height: 6px;
     top: -4px;
-    background: ${({ theme, reverse }) =>
-      reverse ? theme.colors.yellow : "gray"};
+    background: ${({ theme, reverse }) => (reverse ? theme.color : "gray")};
     animation: move ${({ duration }) => duration()}s ease-in-out infinite;
     animation-direction: ${({ reverse }) => (reverse ? "reverse" : "normal")};
   }
