@@ -153,7 +153,7 @@ export const CreateBlockchain: React.FC = () => {
           <Spinner />
         ) : (
           <CreateBlockchainButton onClick={createBlockchain}>
-            RUN CHAIN
+            SETUP CHAIN
           </CreateBlockchainButton>
         )}
       </Container>

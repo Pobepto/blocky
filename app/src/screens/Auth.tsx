@@ -19,7 +19,6 @@ export const Auth: React.FC = () => {
         <BlockRain />
       </OffsetBlock>
       <Root>
-        {/* TODO: Add correct chain information, switch chain on connect */}
         <ChainCore onClick={onConnect}>
           <Metamask />
         </ChainCore>

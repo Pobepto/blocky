@@ -7,10 +7,11 @@ import { ReactComponent as FarmingSVG } from "@assets/game/Farming.svg";
 import { ReactComponent as NodeSVG } from "@assets/game/Node.svg";
 import { DAPP_GROUP } from "@src/constants";
 import { useContracts, useKeyPress } from "@src/hooks";
-import { useOnClickOutside } from "@src/hooks/useOnClickOutside";
 import { useStore } from "@src/store";
 import { BN } from "@src/utils/BN";
 import { clamp } from "@src/utils/clamp";
+
+import { Sidebar } from "./Sidebar";
 
 interface ItemProps {
   icon: React.FC;
@@ -34,7 +35,13 @@ const Item: React.FC<ItemProps> = ({
   return (
     <ItemRoot>
       <Icon />
-      <span style={{ fontSize: "12px" }}>{title}</span>
+      <ContentBlock>
+        <span>{title.toUpperCase()}</span>
+        <span style={{ fontSize: "12px" }}>TPS: -2, L/S: 10</span>
+      </ContentBlock>
+      {/* <span style={{ fontSize: "12px" }}>
+        {title} dklsdksldksldsk dksldk lkdsl kdls kdsl kdl
+      </span> */}
       <CounterBlock isChanged={isChanged}>
         <span onClick={onDecrease}>-</span>
         <span>{count}</span>
@@ -50,6 +57,13 @@ const ItemRoot = styled.div`
   justify-content: space-between;
   align-items: center;
   gap: 20px;
+`;
+
+const ContentBlock = styled.div`
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  gap: 8px;
 `;
 
 const CounterBlock = styled.div<{ isChanged: boolean }>`
@@ -120,7 +134,6 @@ const cumulativeCost = (
 export const Menu: React.FC<Props> = ({ close, isOpen }) => {
   const { store } = useStore();
   const { gameContract } = useContracts() ?? {};
-  const menuRef = useRef<HTMLDivElement>(null);
   const [cart, setCart] = useState<Partial<Cart>>({});
   const baseCart = useRef<Partial<Cart>>({});
 
@@ -157,8 +170,6 @@ export const Menu: React.FC<Props> = ({ close, isOpen }) => {
     close();
     setCart({ ...baseCart.current });
   };
-
-  useOnClickOutside(menuRef, () => onClose());
 
   const buy = async () => {
     const blockchainId = store.selectedBlockchainId!;
@@ -227,8 +238,7 @@ export const Menu: React.FC<Props> = ({ close, isOpen }) => {
   const total = calculateTotalCost();
 
   return (
-    <Root ref={menuRef} isOpen={isOpen}>
-      <Title>SHOP</Title>
+    <Sidebar close={onClose} isOpen={isOpen} title="SHOP">
       <Content>
         <Category>Decentralized apps</Category>
         {(dapps ?? []).map((dapp) => (
@@ -252,32 +262,25 @@ export const Menu: React.FC<Props> = ({ close, isOpen }) => {
           onIncrease={onIncrease("nodes")}
         />
       </Content>
-      <div>
+      <TotalBlock>
         <span>Total:</span>
         <span>{BN.formatUnits(total, 2).toString()}</span>
-      </div>
+      </TotalBlock>
       <Footer>
         <span onClick={() => onClose()}>CANCEL</span>
         <span onClick={buy}>BUY</span>
       </Footer>
-    </Root>
+    </Sidebar>
   );
 };
 
-const Root = styled.div<{ isOpen: boolean }>`
-  position: absolute;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  width: 550px;
-  height: 100vh;
-  border-left: 2px solid ${({ theme }) => theme.color};
-  background: #00000099;
-  top: 0;
-  right: 0;
-  z-index: 1;
-  transition: right 0.3s ease-in-out;
-  right: ${({ isOpen }) => (isOpen ? "0" : "-550px")};
+const TotalBlock = styled.div`
+  margin-bottom: 16px;
+  user-select: none;
+
+  span:nth-of-type(1) {
+    margin-right: 8px;
+  }
 `;
 
 const Content = styled.div`
@@ -308,10 +311,4 @@ const Footer = styled.div`
       color: ${({ theme }) => theme.color};
     }
   }
-`;
-
-const Title = styled.span`
-  font-size: 20px;
-  padding-top: 50px;
-  margin-bottom: 20px;
 `;

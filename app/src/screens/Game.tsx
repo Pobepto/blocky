@@ -7,6 +7,7 @@ import { ReactComponent as PlusIcon } from "@assets/images/plus.svg";
 import { ReactComponent as QuestionIcon } from "@assets/images/question.svg";
 import { Blockchain, CreateBlockchain } from "@components/Blockchain";
 import { Layout } from "@components/Layout";
+import { Achievement } from "@src/components/Achievement";
 import { BlockchainList } from "@src/components/BlockchainList";
 import { Menu } from "@src/components/Menu";
 import { Spinner } from "@src/components/Spinner";
@@ -23,6 +24,7 @@ export const Game: React.FC = () => {
   const provider = useProvider()!;
   const [isLoading, setLoading] = useState(true);
   const [isMenuVisible, setMenuVisible] = useState(false);
+  const [isAchievementVisible, setAchievementVisible] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -127,12 +129,16 @@ export const Game: React.FC = () => {
         </TVLBlock>
 
         <ButtonsBlock>
-          <StyledQuestionIcon />
+          <StyledQuestionIcon onClick={() => setAchievementVisible(true)} />
           <StyledImportantIcon />
           <StyledPlusIcon onClick={() => setMenuVisible(true)} />
         </ButtonsBlock>
       </Footer>
       <Menu close={() => setMenuVisible(false)} isOpen={isMenuVisible} />
+      <Achievement
+        close={() => setAchievementVisible(false)}
+        isOpen={isAchievementVisible}
+      />
     </Layout>
   );
 };
