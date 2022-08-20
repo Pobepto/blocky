@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import { Web3ReactHooks, Web3ReactProvider } from "@web3-react/core";
 import { MetaMask } from "@web3-react/metamask";
 
@@ -11,6 +12,8 @@ import { ThemeWrapper } from "@src/theme";
 import { hooks, metaMask } from "@utils/metamask";
 
 import { Store } from "./store";
+
+import "react-toastify/dist/ReactToastify.css";
 
 const connectors: [MetaMask, Web3ReactHooks][] = [[metaMask, hooks]];
 
@@ -41,6 +44,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
               <Route element={<Navigate to="/" />} path="*" />
             </Routes>
           </BrowserRouter>
+          <ToastContainer position="top-center" theme="dark" />
         </ThemeWrapper>
       </Store>
     </Web3ReactProvider>

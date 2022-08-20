@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 import styled from "@emotion/styled";
 import { BigNumber } from "@ethersproject/bignumber";
 
@@ -18,6 +19,7 @@ interface ItemProps {
   title: string;
   initialCount: number;
   count: number;
+  description: string;
   onIncrease: () => void;
   onDecrease: () => void;
 }
@@ -27,6 +29,7 @@ const Item: React.FC<ItemProps> = ({
   title,
   initialCount,
   count,
+  description,
   onIncrease,
   onDecrease,
 }) => {
@@ -37,11 +40,8 @@ const Item: React.FC<ItemProps> = ({
       <Icon />
       <ContentBlock>
         <span>{title.toUpperCase()}</span>
-        <span style={{ fontSize: "12px" }}>TPS: -2, L/S: 10</span>
+        <span style={{ fontSize: "12px" }}>{description}</span>
       </ContentBlock>
-      {/* <span style={{ fontSize: "12px" }}>
-        {title} dklsdksldksldsk dksldk lkdsl kdls kdsl kdl
-      </span> */}
       <CounterBlock isChanged={isChanged}>
         <span onClick={onDecrease}>-</span>
         <span>{count}</span>
@@ -177,14 +177,19 @@ export const Menu: React.FC<Props> = ({ close, isOpen }) => {
     const nodes = cart.nodes! - baseCart.current.nodes!;
     const { dapps, dappsAmounts } = getDappsFromCart();
 
-    const tx = await gameContract!.buy(
-      blockchainId,
-      nodes,
-      dapps,
-      dappsAmounts
-    );
-    await tx.wait();
-    baseCart.current = cart;
+    try {
+      const tx = await gameContract!.buy(
+        blockchainId,
+        nodes,
+        dapps,
+        dappsAmounts
+      );
+      await tx.wait();
+      baseCart.current = cart;
+    } catch (err: any) {
+      const errorText = (err?.reason ?? "").replace("execution reverted: ", "");
+      errorText && toast.error(errorText);
+    }
   };
 
   const getDappsFromCart = () => {
@@ -241,20 +246,29 @@ export const Menu: React.FC<Props> = ({ close, isOpen }) => {
     <Sidebar close={onClose} isOpen={isOpen} title="SHOP">
       <Content>
         <Category>Decentralized apps</Category>
-        {(dapps ?? []).map((dapp) => (
-          <Item
-            key={`${dapp.group}${dapp.kind}`}
-            count={cart[dapp.group] ?? 0}
-            icon={DAppsIcons[dapp.group]}
-            initialCount={baseCart.current[dapp.group] ?? 0}
-            title={DAppsTitles[dapp.group]}
-            onDecrease={onDecrease(dapp.group)}
-            onIncrease={onIncrease(dapp.group)}
-          />
-        ))}
+        {(dapps ?? []).map((dapp) => {
+          const description = `TPS: -${dapp.tps}, L/B: ${BN.formatUnits(
+            dapp.liquidityPerBlock,
+            2
+          )}`;
+
+          return (
+            <Item
+              key={`${dapp.group}${dapp.kind}`}
+              count={cart[dapp.group] ?? 0}
+              description={description}
+              icon={DAppsIcons[dapp.group]}
+              initialCount={baseCart.current[dapp.group] ?? 0}
+              title={DAppsTitles[dapp.group]}
+              onDecrease={onDecrease(dapp.group)}
+              onIncrease={onIncrease(dapp.group)}
+            />
+          );
+        })}
         <Category>Environment</Category>
         <Item
           count={cart.nodes ?? 0}
+          description={`TPS: +${node?.tps}`}
           icon={NodeSVG}
           initialCount={baseCart.current.nodes ?? 0}
           title="Node"

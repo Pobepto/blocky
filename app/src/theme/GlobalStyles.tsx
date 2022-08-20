@@ -32,6 +32,11 @@ export const GlobalStyles: React.FC = () => {
           color: unset;
           text-align: unset;
         }
+
+        .Toastify__toast-body {
+          font-family: "Press Start 2P", cursive;
+          font-size: 12px;
+        }
       `}
     />
   );
