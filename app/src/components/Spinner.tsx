@@ -11,6 +11,10 @@ export const Spinner: React.FC = () => {
   );
 };
 
+export const SmallSpinner: React.FC = () => {
+  return <SpinnerAnimation />;
+};
+
 const Container = styled.div`
   position: relative;
   display: flex;

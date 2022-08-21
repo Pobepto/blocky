@@ -3,19 +3,15 @@ import { toast } from "react-toastify";
 import styled from "@emotion/styled";
 import { BigNumber } from "@ethersproject/bignumber";
 
-import { ReactComponent as BridgeSVG } from "@assets/game/Bridge.svg";
-import { ReactComponent as DaoSVG } from "@assets/game/Dao.svg";
-import { ReactComponent as DexSVG } from "@assets/game/Dex.svg";
-import { ReactComponent as FarmingSVG } from "@assets/game/Farming.svg";
-import { ReactComponent as GamingSVG } from "@assets/game/Gaming.svg";
 import { ReactComponent as NodeSVG } from "@assets/game/Node.svg";
-import { DAPP_ID } from "@src/constants";
+import { DAPP_ID, DAPPS_ICONS } from "@src/constants";
 import { useContracts, useKeyPress } from "@src/hooks";
 import { useStore } from "@src/store";
 import { BN } from "@src/utils/BN";
 import { clamp } from "@src/utils/clamp";
 
 import { Sidebar } from "./Sidebar";
+import { SmallSpinner } from "./Spinner";
 
 interface ItemProps {
   icon: React.FC;
@@ -95,14 +91,6 @@ interface Props {
   isOpen: boolean;
 }
 
-const DAppsIcons = {
-  [DAPP_ID.DEX]: DexSVG,
-  [DAPP_ID.FARM]: FarmingSVG,
-  [DAPP_ID.GAMEFI]: GamingSVG,
-  [DAPP_ID.BRIDGE]: BridgeSVG,
-  [DAPP_ID.DAO]: DaoSVG,
-};
-
 const DAppsTitles = {
   [DAPP_ID.DEX]: "DEX",
   [DAPP_ID.FARM]: "Farming",
@@ -148,6 +136,7 @@ export const Menu: React.FC<Props> = ({ close, isOpen }) => {
   const { store } = useStore();
   const { gameContract } = useContracts() ?? {};
   const [cart, setCart] = useState<Partial<Cart>>({});
+  const [isBuying, setBuying] = useState(false);
   const baseCart = useRef<Partial<Cart>>({});
 
   useEffect(() => {
@@ -190,6 +179,7 @@ export const Menu: React.FC<Props> = ({ close, isOpen }) => {
     const { dapps, dappsAmounts } = getDappsFromCart();
 
     try {
+      setBuying(true);
       const tx = await gameContract!.buy(
         blockchainId,
         nodes,
@@ -201,6 +191,8 @@ export const Menu: React.FC<Props> = ({ close, isOpen }) => {
     } catch (err: any) {
       const errorText = (err?.reason ?? "").replace("execution reverted: ", "");
       errorText && toast.error(errorText);
+    } finally {
+      setBuying(false);
     }
   };
 
@@ -269,7 +261,7 @@ export const Menu: React.FC<Props> = ({ close, isOpen }) => {
               key={`${dapp.id}`}
               count={cart[dapp.id] ?? 0}
               description={description}
-              icon={DAppsIcons[dapp.id]}
+              icon={DAPPS_ICONS[dapp.id]}
               initialCount={baseCart.current[dapp.id] ?? 0}
               title={DAppsTitles[dapp.id]}
               onDecrease={onDecrease(dapp.id)}
@@ -288,13 +280,14 @@ export const Menu: React.FC<Props> = ({ close, isOpen }) => {
           onIncrease={onIncrease("nodes")}
         />
       </Content>
+
       <TotalBlock>
         <span>Total:</span>
         <span>{BN.formatUnits(total, 2).toString()}</span>
       </TotalBlock>
       <Footer>
         <span onClick={() => onClose()}>CANCEL</span>
-        <span onClick={buy}>BUY</span>
+        {isBuying ? <SmallSpinner /> : <span onClick={buy}>BUY</span>}
       </Footer>
     </Sidebar>
   );

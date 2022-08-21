@@ -1,6 +1,12 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import type { AddEthereumChainParameter } from "@web3-react/types";
 
+import { ReactComponent as BridgeSVG } from "@assets/game/Bridge.svg";
+import { ReactComponent as DaoSVG } from "@assets/game/Dao.svg";
+import { ReactComponent as DexSVG } from "@assets/game/Dex.svg";
+import { ReactComponent as FarmingSVG } from "@assets/game/Farming.svg";
+import { ReactComponent as GamingSVG } from "@assets/game/Gaming.svg";
+
 import { abi as DB_ABI } from "./abi/DB_ABI.json";
 import { abi as GAME_ABI } from "./abi/GAME_ABI.json";
 
@@ -43,8 +49,6 @@ export const CONTRACTS = {
   },
 };
 
-export type DappIds = 0;
-
 export enum DAPP_ID {
   DEX = 0,
   FARM = 1,
@@ -52,6 +56,14 @@ export enum DAPP_ID {
   BRIDGE = 3,
   DAO = 4,
 }
+
+export const DAPPS_ICONS = {
+  [DAPP_ID.DEX]: DexSVG,
+  [DAPP_ID.FARM]: FarmingSVG,
+  [DAPP_ID.GAMEFI]: GamingSVG,
+  [DAPP_ID.BRIDGE]: BridgeSVG,
+  [DAPP_ID.DAO]: DaoSVG,
+};
 
 export interface Node {
   price: BigNumber;

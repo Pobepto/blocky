@@ -2,9 +2,8 @@ import React from "react";
 import styled from "@emotion/styled";
 import { BigNumber } from "@ethersproject/bignumber";
 
-import { ReactComponent as DexSVG } from "@assets/game/Dex.svg";
 import { ReactComponent as NodeSVG } from "@assets/game/Node.svg";
-import { DappIds } from "@src/constants";
+import { DAPP_ID, DAPPS_ICONS } from "@src/constants";
 
 import { OffsetBlock } from "./OffsetBlock";
 
@@ -12,13 +11,6 @@ interface IProps {
   dapps: BigNumber[];
   reverse: boolean;
 }
-
-const DAPP_MAP: Record<
-  DappIds,
-  React.FunctionComponent<React.SVGProps<SVGSVGElement>>
-> = {
-  0: DexSVG,
-};
 
 export const Node: React.FC<IProps> = ({ dapps, reverse }) => {
   const lineTopOffset = (44 / 2 + 40) * (reverse ? 1 : -1);
@@ -29,7 +21,7 @@ export const Node: React.FC<IProps> = ({ dapps, reverse }) => {
     <Container>
       {dapps.map((id, index) => {
         const dappTopOffset = (125 + index * 60) * (reverse ? 1 : -1);
-        const Icon = DAPP_MAP[id.toNumber() as DappIds];
+        const Icon = DAPPS_ICONS[id.toNumber() as DAPP_ID];
 
         return (
           <OffsetBlock key={index} left={0} top={dappTopOffset}>

@@ -3,7 +3,7 @@ import { keyframes } from "@emotion/react";
 import styled from "@emotion/styled";
 import { BigNumber } from "@ethersproject/bignumber";
 
-import { DappIds, IBlockchain } from "@src/constants";
+import { DAPP_ID, IBlockchain } from "@src/constants";
 import { useContracts } from "@src/hooks";
 import { useEventListener } from "@src/hooks/useEventListener";
 import { useStore } from "@src/store";
@@ -38,7 +38,7 @@ export const Blockchain: React.FC<Props> = ({ blockchain }) => {
 
     return [
       ...new Set(
-        blockchain.dappsIds.map((id) => MAP_IDS_TYPE[id.toNumber() as DappIds])
+        blockchain.dappsIds.map((id) => MAP_IDS_TYPE[id.toNumber() as DAPP_ID])
       ),
     ];
   }, [blockchain.dappsIds.length]);
@@ -99,7 +99,11 @@ export const Blockchain: React.FC<Props> = ({ blockchain }) => {
   const dappsIds = [...blockchain.dappsIds];
   const middleIndex = Math.ceil(blockchain.dappsIds.length / 2);
   const dappsIdsLeft = dappsIds.slice(0, middleIndex);
-  const dappsIdsRight = dappsIds.slice(middleIndex);
+  let dappsIdsRight = dappsIds.slice(middleIndex);
+
+  if (nodesAmount === 1) {
+    dappsIdsRight = dappsIds;
+  }
 
   return (
     <Root>
