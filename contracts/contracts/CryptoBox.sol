@@ -48,8 +48,12 @@ contract CryptoBox is Ownable {
   }
 
   function buy(uint blockchainId, uint nodes, uint[] calldata dapps, uint[] calldata dappsAmounts) external {
-    Blockchain storage blockchain = _safeGetBlockchain(blockchainId);
+    Blockchain storage blockchain = _blockchains[blockchainId];
 
+    require(blockchain.owner != address(0), "Blockchain not found");
+    require(blockchain.owner == msg.sender, "You are not the owner of this blockchain");
+
+    uint totalLiqudity = blockchain.liquidity + _getBlockchainPendingLiquidity(blockchain);
     uint totalPrice;
 
     if (nodes > 0) {
@@ -60,7 +64,6 @@ contract CryptoBox is Ownable {
       totalPrice += _buyDapps(blockchain, dapps, dappsAmounts);
     }
 
-    uint totalLiqudity = blockchain.liquidity + _getBlockchainPendingLiquidity(blockchain);
     require(totalLiqudity >= totalPrice, "Not enough liquidity");
 
     blockchain.liquidity = totalLiqudity - totalPrice;
@@ -128,16 +131,6 @@ contract CryptoBox is Ownable {
   // onlyOwner methods
   function setDB(CryptoBoxDB db) external onlyOwner {
     _db = db;
-  }
-
-  // private view methods
-  function _safeGetBlockchain(uint blockchainId) private view returns (Blockchain storage) {
-    Blockchain storage blockchain = _blockchains[blockchainId];
-
-    require(blockchain.owner != address(0), "Blockchain not found");
-    require(blockchain.owner == msg.sender, "You are not the owner of this blockchain");
-
-    return blockchain;
   }
 
   function _getBlockchainPendingLiquidity(Blockchain memory blockchain) private view returns (uint) {

@@ -35,7 +35,7 @@ export const CHAIN_PARAMS: AddEthereumChainParameter = isDev
 export const CONTRACTS = {
   GAME: {
     ABI: GAME_ABI,
-    ADDRESS: "0x10165d042D061279354fc2f2e0F79DAE2e0D5abF",
+    ADDRESS: "0x6e6448dda3e28c6aa8afcc92ceeb0a9fd9dde077",
   },
   DB: {
     ABI: DB_ABI,

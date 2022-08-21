@@ -121,6 +121,10 @@ const cumulativeCost = (
   currentAmount: number,
   newAmount: number
 ) => {
+  if (newAmount === 0) {
+    return BigNumber.from(0);
+  }
+
   const b = BigNumber.from(115)
     .pow(newAmount)
     .div(BigNumber.from(100).pow(newAmount - 1));
@@ -224,7 +228,7 @@ export const Menu: React.FC<Props> = ({ close, isOpen }) => {
     const nodeBasePrice = node?.price ?? BigNumber.from(0);
     const totalNodeCost = cumulativeCost(
       nodeBasePrice,
-      baseCart.current?.nodes ?? 1,
+      baseCart.current?.nodes ?? 0,
       cart?.nodes ?? 1
     );
 
@@ -240,7 +244,7 @@ export const Menu: React.FC<Props> = ({ close, isOpen }) => {
       const baseDappPrice = dappData?.price ?? BigNumber.from(0);
       const dappPrice = cumulativeCost(
         baseDappPrice,
-        baseCart.current[dappId] ?? 1,
+        baseCart.current[dappId] ?? 0,
         cart[dappId] ?? 1
       );
       totalDappsCost = totalDappsCost.add(dappPrice);
