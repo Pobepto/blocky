@@ -171,7 +171,6 @@ export const Menu: React.FC<Props> = ({ close, isOpen }) => {
   };
 
   const onIncrease = (key: keyof Cart) => () => {
-    console.log("isShiftPressed", isShiftPressed);
     const value = isShiftPressed ? 10 : 1;
     const base = cart[key] ?? 0;
     setCart((cart) => ({ ...cart, [key]: base + value }));

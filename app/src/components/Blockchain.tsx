@@ -96,9 +96,10 @@ export const Blockchain: React.FC<Props> = ({ blockchain }) => {
   const leftHalf = Math.floor(half);
   const rightHalf = Math.ceil(half);
 
+  const dappsIds = [...blockchain.dappsIds];
   const middleIndex = Math.ceil(blockchain.dappsIds.length / 2);
-  const dappsIdsLeft = blockchain.dappsIds.slice().splice(0, middleIndex - 1);
-  const dappsIdsRight = blockchain.dappsIds.slice().splice(-middleIndex);
+  const dappsIdsLeft = dappsIds.slice(0, middleIndex);
+  const dappsIdsRight = dappsIds.slice(middleIndex);
 
   return (
     <Root>
