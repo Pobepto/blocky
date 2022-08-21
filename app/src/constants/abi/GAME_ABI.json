@@ -3,6 +3,41 @@
     {
       "inputs": [
         {
+          "internalType": "uint256",
+          "name": "blockchainId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "nodes",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "dapps",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "dappsAmounts",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "buy",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "createBlockchain",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "contract CryptoBoxDB",
           "name": "db",
           "type": "address"
@@ -32,69 +67,7 @@
     },
     {
       "inputs": [],
-      "name": "owner",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [],
       "name": "renounceOwnership",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "newOwner",
-          "type": "address"
-        }
-      ],
-      "name": "transferOwnership",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "createBlockchain",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "blockchainId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "nodes",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256[]",
-          "name": "dapps",
-          "type": "uint256[]"
-        },
-        {
-          "internalType": "uint256[]",
-          "name": "dappsAmounts",
-          "type": "uint256[]"
-        }
-      ],
-      "name": "buy",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -108,6 +81,19 @@
         }
       ],
       "name": "setDB",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -176,13 +162,12 @@
         },
         {
           "internalType": "uint256",
-          "name": "pendingLiquiduty",
+          "name": "pendingLiquidity",
           "type": "uint256"
         }
       ],
       "stateMutability": "view",
-      "type": "function",
-      "constant": true
+      "type": "function"
     },
     {
       "inputs": [
@@ -201,8 +186,20 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function",
-      "constant": true
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
     }
   ]
 }

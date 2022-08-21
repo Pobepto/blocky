@@ -109,7 +109,7 @@ contract CryptoBox is Ownable {
     return totalPrice;
   }
 
-  function cumulativeCost(uint baseCost, uint currentAmount, uint newAmount) internal view returns (uint) {
+  function cumulativeCost(uint baseCost, uint currentAmount, uint newAmount) internal pure returns (uint) {
     uint b = (115**newAmount) / (100**(newAmount - 1));
 
     if (currentAmount == 0) {
