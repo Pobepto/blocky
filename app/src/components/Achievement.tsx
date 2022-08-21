@@ -2,6 +2,7 @@ import React from "react";
 import styled from "@emotion/styled";
 
 import { ReactComponent as StarIcon } from "@assets/images/star.svg";
+import { useAchievement } from "@src/hooks/useAchievement";
 
 import { Sidebar } from "./Sidebar";
 
@@ -11,32 +12,21 @@ interface Props {
 }
 
 export const Achievement: React.FC<Props> = ({ close, isOpen }) => {
+  const [achievements, unlocked] = useAchievement();
+
   return (
     <Sidebar close={close} isOpen={isOpen} title="ACHIEVEMENTS">
       <Content>
-        <Category>
-          <StarIcon />
-          <span>Create first blockchain</span>
-          <StarIcon />
-        </Category>
-        <Category>
-          <StarIcon />
-          <span>Get 10 TPS</span>
-          <StarIcon />
-        </Category>
-        <Category>
-          <StarIcon />
-          <span>Win polygon Hackaton</span>
-          <StarIcon />
-        </Category>
-        <Category>????? ????? ?????</Category>
-        <Category>????? ????? ?????</Category>
-        <Category>????? ????? ?????</Category>
-        <Category>????? ????? ?????</Category>
-        <Category>????? ????? ?????</Category>
-        <Category>????? ????? ?????</Category>
-        <Category>????? ????? ?????</Category>
-        <Category>????? ????? ?????</Category>
+        {achievements.map((ach) => {
+          const received = unlocked.includes(ach.id);
+          return (
+            <Category key={ach.id}>
+              {received && <StarIcon />}
+              <span>{ach.isHidden ? "????? ????? ?????" : ach.title}</span>
+              {received && <StarIcon />}
+            </Category>
+          );
+        })}
       </Content>
       <Footer>
         <span onClick={() => close()}>CANCEL</span>

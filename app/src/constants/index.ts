@@ -6,6 +6,8 @@ import { abi as GAME_ABI } from "./abi/GAME_ABI.json";
 
 export const isDev = true;
 
+export const ACHIEVEMENTS_KEY = "blocky-achievements";
+
 export const CHAIN_PARAMS: AddEthereumChainParameter = isDev
   ? {
       chainId: 80001,
