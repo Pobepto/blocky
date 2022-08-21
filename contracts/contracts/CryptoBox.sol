@@ -44,10 +44,6 @@ contract CryptoBox is Ownable {
       dappsIds: new uint[](0)
     }));
 
-    if (_userBlockchains[msg.sender].length != 0) {
-      // TODO: если это уже не первый блокчейн этого пользователя то делать создание платным
-    }
-
     _userBlockchains[msg.sender].push(blockchainId);
   }
 
@@ -149,9 +145,9 @@ contract CryptoBox is Ownable {
   }
 
   // public view methods
-  function getBlockchain(uint blockchainId) external view returns (Blockchain memory blockchain, uint pendingLiquiduty) {
+  function getBlockchain(uint blockchainId) external view returns (Blockchain memory blockchain, uint pendingLiquidity) {
     blockchain = _blockchains[blockchainId];
-    pendingLiquiduty = _getBlockchainPendingLiquidity(blockchain);
+    pendingLiquidity = _getBlockchainPendingLiquidity(blockchain);
   }
 
   function getUserBlockchains(address user) external view returns (uint[] memory) {

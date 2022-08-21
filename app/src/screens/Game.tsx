@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { BigNumber } from "@ethersproject/bignumber";
 
-import { ReactComponent as ImportantIcon } from "@assets/images/important.svg";
 import { ReactComponent as PlusIcon } from "@assets/images/plus.svg";
 import { ReactComponent as QuestionIcon } from "@assets/images/question.svg";
 import { Blockchain, CreateBlockchain } from "@components/Blockchain";
@@ -44,7 +43,10 @@ export const Game: React.FC = () => {
 
       write("db", {
         node,
-        dapps,
+        dapps: dapps.map((dapp: any) => ({
+          ...dapp,
+          id: dapp.id.toNumber(),
+        })),
       });
       write(
         "blockchainsIds",
@@ -61,8 +63,7 @@ export const Game: React.FC = () => {
     if (store.selectedBlockchainId === undefined) return;
 
     const loadBlockchain = async () => {
-      // TODO: Fix typo in contract
-      const { blockchain, pendingLiquiduty } =
+      const { blockchain, pendingLiquidity } =
         await contracts.gameContract.callStatic.getBlockchain(
           store.selectedBlockchainId
         );
@@ -73,7 +74,7 @@ export const Game: React.FC = () => {
 
       write("blockchain", {
         ...blockchain,
-        liquidity: blockchain.liquidity.add(pendingLiquiduty),
+        liquidity: blockchain.liquidity.add(pendingLiquidity),
         color: getColorFromIndex(localBlockchainIndex),
       });
     };
@@ -130,7 +131,6 @@ export const Game: React.FC = () => {
 
         <ButtonsBlock>
           <StyledQuestionIcon onClick={() => setAchievementVisible(true)} />
-          <StyledImportantIcon />
           <StyledPlusIcon onClick={() => setMenuVisible(true)} />
         </ButtonsBlock>
       </Footer>
@@ -177,14 +177,6 @@ const StyledPlusIcon = styled(PlusIcon)`
   }
 `;
 const StyledQuestionIcon = styled(QuestionIcon)`
-  cursor: pointer;
-  transition: transform 0.4s ease-in-out;
-
-  :hover {
-    transform: rotate(360deg);
-  }
-`;
-const StyledImportantIcon = styled(ImportantIcon)`
   cursor: pointer;
   transition: transform 0.4s ease-in-out;
 

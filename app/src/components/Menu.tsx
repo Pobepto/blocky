@@ -3,10 +3,13 @@ import { toast } from "react-toastify";
 import styled from "@emotion/styled";
 import { BigNumber } from "@ethersproject/bignumber";
 
+import { ReactComponent as BridgeSVG } from "@assets/game/Bridge.svg";
+import { ReactComponent as DaoSVG } from "@assets/game/Dao.svg";
 import { ReactComponent as DexSVG } from "@assets/game/Dex.svg";
 import { ReactComponent as FarmingSVG } from "@assets/game/Farming.svg";
+import { ReactComponent as GamingSVG } from "@assets/game/Gaming.svg";
 import { ReactComponent as NodeSVG } from "@assets/game/Node.svg";
-import { DAPP_GROUP } from "@src/constants";
+import { DAPP_ID } from "@src/constants";
 import { useContracts, useKeyPress } from "@src/hooks";
 import { useStore } from "@src/store";
 import { BN } from "@src/utils/BN";
@@ -93,13 +96,19 @@ interface Props {
 }
 
 const DAppsIcons = {
-  [DAPP_GROUP.DEFI]: DexSVG,
-  [DAPP_GROUP.GAMEFI]: FarmingSVG,
+  [DAPP_ID.DEX]: DexSVG,
+  [DAPP_ID.FARM]: FarmingSVG,
+  [DAPP_ID.GAMEFI]: GamingSVG,
+  [DAPP_ID.BRIDGE]: BridgeSVG,
+  [DAPP_ID.DAO]: DaoSVG,
 };
 
 const DAppsTitles = {
-  [DAPP_GROUP.DEFI]: "Dex",
-  [DAPP_GROUP.GAMEFI]: "Gamefi",
+  [DAPP_ID.DEX]: "DEX",
+  [DAPP_ID.FARM]: "Farming",
+  [DAPP_ID.GAMEFI]: "GameFi",
+  [DAPP_ID.BRIDGE]: "Bridge",
+  [DAPP_ID.DAO]: "DAO",
 };
 
 interface Cart {
@@ -225,7 +234,7 @@ export const Menu: React.FC<Props> = ({ close, isOpen }) => {
 
     for (const dappId of dapps) {
       const dappData = store.db.dapps!.find(
-        (dapp) => dapp.group === parseInt(dappId)
+        (dapp) => dapp.id === parseInt(dappId)
       );
 
       const baseDappPrice = dappData?.price ?? BigNumber.from(0);
@@ -254,14 +263,14 @@ export const Menu: React.FC<Props> = ({ close, isOpen }) => {
 
           return (
             <Item
-              key={`${dapp.group}${dapp.kind}`}
-              count={cart[dapp.group] ?? 0}
+              key={`${dapp.id}`}
+              count={cart[dapp.id] ?? 0}
               description={description}
-              icon={DAppsIcons[dapp.group]}
-              initialCount={baseCart.current[dapp.group] ?? 0}
-              title={DAppsTitles[dapp.group]}
-              onDecrease={onDecrease(dapp.group)}
-              onIncrease={onIncrease(dapp.group)}
+              icon={DAppsIcons[dapp.id]}
+              initialCount={baseCart.current[dapp.id] ?? 0}
+              title={DAppsTitles[dapp.id]}
+              onDecrease={onDecrease(dapp.id)}
+              onIncrease={onIncrease(dapp.id)}
             />
           );
         })}

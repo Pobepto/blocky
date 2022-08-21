@@ -45,14 +45,12 @@ export const CONTRACTS = {
 
 export type DappIds = 0;
 
-export enum DAPP_GROUP {
-  DEFI,
-  GAMEFI,
-}
-
-export enum DAPP_KIND {
-  DEFI_DEX,
-  DEFI_YIELD_FARMING,
+export enum DAPP_ID {
+  DEX = 0,
+  FARM = 1,
+  GAMEFI = 2,
+  BRIDGE = 3,
+  DAO = 4,
 }
 
 export interface Node {
@@ -61,11 +59,10 @@ export interface Node {
 }
 
 export interface DApp {
-  group: DAPP_GROUP;
-  kind: DAPP_KIND;
-  price: BigNumber; // цена покупки
-  tps: BigNumber; // количество используемой tps
-  liquidityPerBlock: BigNumber; // сколько ликвидности за блок дает
+  id: DAPP_ID;
+  price: BigNumber;
+  tps: BigNumber;
+  liquidityPerBlock: BigNumber;
 }
 
 export interface IBlockchain {

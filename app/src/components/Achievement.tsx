@@ -2,7 +2,7 @@ import React from "react";
 import styled from "@emotion/styled";
 
 import { ReactComponent as StarIcon } from "@assets/images/star.svg";
-import { useAchievement } from "@src/hooks/useAchievement";
+import { ACHIEVEMENTS, useAchievement } from "@src/hooks/useAchievement";
 
 import { Sidebar } from "./Sidebar";
 
@@ -12,17 +12,19 @@ interface Props {
 }
 
 export const Achievement: React.FC<Props> = ({ close, isOpen }) => {
-  const [achievements, unlocked] = useAchievement();
+  const [unlocked] = useAchievement();
 
   return (
     <Sidebar close={close} isOpen={isOpen} title="ACHIEVEMENTS">
       <Content>
-        {achievements.map((ach) => {
+        {ACHIEVEMENTS.map((ach) => {
           const received = unlocked.includes(ach.id);
           return (
-            <Category key={ach.id}>
+            <Category key={ach.id} locked={!received}>
               {received && <StarIcon />}
-              <span>{ach.isHidden ? "????? ????? ?????" : ach.title}</span>
+              <span>
+                {ach.isHidden && !received ? "????? ????? ?????" : ach.title}
+              </span>
               {received && <StarIcon />}
             </Category>
           );
@@ -43,7 +45,7 @@ const Content = styled.div`
   width: 90%;
 `;
 
-const Category = styled.div`
+const Category = styled.div<{ locked: boolean }>`
   font-size: 16px;
   text-align: center;
   display: flex;
@@ -52,6 +54,7 @@ const Category = styled.div`
 
   span {
     margin: 0 16px;
+    opacity: ${({ locked }) => (locked ? 0.5 : 1)};
   }
 
   svg {

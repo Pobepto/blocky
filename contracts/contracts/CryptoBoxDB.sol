@@ -2,27 +2,16 @@
 pragma solidity ^0.8.0;
 
 contract CryptoBoxDB {
-  enum DAPP_GROUP {
-    DEFI,
-    GAMEFI
-  }
-
-  enum DAPP_KIND {
-    DEFI_DEX,
-    DEFI_YIELD_FARMING
-  }
-
   struct NodeData {
     uint price;
     uint tps;
   }
 
   struct DAppData {
-    DAPP_GROUP group;
-    DAPP_KIND kind;
-    uint price; // цена покупки
-    uint tps; // количество используемой tps
-    uint liquidityPerBlock; // сколько ликвидности за блок дает
+    uint id;
+    uint price;
+    uint tps;
+    uint liquidityPerBlock;
   }
 
   NodeData private _node;
@@ -36,17 +25,49 @@ contract CryptoBoxDB {
   function initNode() internal {
     _node = NodeData({
       price: 100,
-      tps: 1
+      tps: 10
     });
   }
 
   function initDApps() internal {
+    // dex
     _dapps.push(DAppData({
-      group: DAPP_GROUP.DEFI,
-      kind: DAPP_KIND.DEFI_DEX,
-      price: 100,
+      id: 0,
+      price: 750,
       tps: 1,
-      liquidityPerBlock: 100
+      liquidityPerBlock: 5
+    }));
+
+    // farm
+    _dapps.push(DAppData({
+      id: 1,
+      price: 5000,
+      tps: 3,
+      liquidityPerBlock: 50
+    }));
+
+    // gamefi
+    _dapps.push(DAppData({
+      id: 2,
+      price: 55000,
+      tps: 9,
+      liquidityPerBlock: 400
+    }));
+
+    // bridge
+    _dapps.push(DAppData({
+      id: 3,
+      price: 600000,
+      tps: 27,
+      liquidityPerBlock: 2350
+    }));
+
+    // dao
+    _dapps.push(DAppData({
+      id: 4,
+      price: 6500000,
+      tps: 81,
+      liquidityPerBlock: 13000
     }));
   }
 
