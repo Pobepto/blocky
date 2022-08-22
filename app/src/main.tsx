@@ -22,7 +22,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <Web3ReactProvider connectors={connectors}>
       <Store>
         <ThemeWrapper>
-          <BrowserRouter>
+          <BrowserRouter basename="/blocky">
             <Routes>
               {/* <Route element={<Auth />} path="/" /> */}
               <Route
