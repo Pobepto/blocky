@@ -16,22 +16,20 @@ export const Achievement: React.FC<Props> = ({ close, isOpen }) => {
 
   return (
     <Sidebar close={close} isOpen={isOpen} title="ACHIEVEMENTS">
-      <Scroll>
-        <Content>
-          {ACHIEVEMENTS.map((ach) => {
-            const received = unlocked.includes(ach.id);
-            return (
-              <Category key={ach.id} locked={!received}>
-                {received && <StarIcon />}
-                <span>
-                  {ach.isHidden && !received ? "????? ????? ?????" : ach.title}
-                </span>
-                {received && <StarIcon />}
-              </Category>
-            );
-          })}
-        </Content>
-      </Scroll>
+      <Content>
+        {ACHIEVEMENTS.map((ach) => {
+          const received = unlocked.includes(ach.id);
+          return (
+            <Category key={ach.id} locked={!received}>
+              {received && <StarIcon />}
+              <span>
+                {ach.isHidden && !received ? "????? ????? ?????" : ach.title}
+              </span>
+              {received && <StarIcon />}
+            </Category>
+          );
+        })}
+      </Content>
       <Footer>
         <span onClick={() => close()}>CANCEL</span>
       </Footer>
@@ -46,13 +44,9 @@ const Content = styled.div`
   flex-grow: 1;
   width: 90%;
 `;
-const Scroll = styled.div`
-  height: 70%;
-  overflow: scroll;
-`;
 
 const Category = styled.div<{ locked: boolean }>`
-  font-size: 16px;
+  font-size: 12px;
   text-align: center;
   display: flex;
   align-items: center;

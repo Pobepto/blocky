@@ -64,15 +64,14 @@ export const Blockchain: React.FC<Props> = ({ blockchain }) => {
   ) => {
     const reverse = position === "left" ? -1 : 1;
     const dappsPerNode = Math.ceil(dappsIds.length / amount);
+    const copyDappsIds = dappsIds.slice();
 
     return Array.from(Array(amount)).map((_, index) => {
       const nodeLeftOffset = (275 + index * 125) * reverse;
       const lineWidth = index === 0 ? 115 : 45;
       const lineLeftOffset = (lineWidth / 2 + 40) * -reverse;
 
-      const nodeDapps = dappsIds
-        .slice(index, index + dappsPerNode)
-        .filter(Boolean);
+      const nodeDapps = copyDappsIds.splice(0, dappsPerNode).filter(Boolean);
 
       return (
         <OffsetBlock key={index} left={nodeLeftOffset} top={0}>

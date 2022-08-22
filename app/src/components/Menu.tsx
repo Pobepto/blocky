@@ -144,6 +144,10 @@ export const Menu: React.FC<Props> = ({ close, isOpen }) => {
       const dappsIds = store.blockchain!.dappsIds;
       const cart = {
         0: dappsIds.filter((id) => id.toNumber() === 0).length,
+        1: dappsIds.filter((id) => id.toNumber() === 1).length,
+        2: dappsIds.filter((id) => id.toNumber() === 2).length,
+        3: dappsIds.filter((id) => id.toNumber() === 3).length,
+        4: dappsIds.filter((id) => id.toNumber() === 4).length,
         nodes: store.blockchain!.nodes.toNumber(),
       };
       setCart(cart);
@@ -180,6 +184,12 @@ export const Menu: React.FC<Props> = ({ close, isOpen }) => {
 
     try {
       setBuying(true);
+      console.log({
+        blockchainId,
+        nodes,
+        dapps,
+        dappsAmounts,
+      });
       const tx = await gameContract!.buy(
         blockchainId,
         nodes,
