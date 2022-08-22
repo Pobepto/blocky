@@ -1,6 +1,6 @@
-<center>
-  <img src="./github/banner.png" width="300">
-</center>
+<p align="center">
+  <img src="./github/banner.png" width="450">
+</p>
 
 # Blocky.
 
@@ -32,15 +32,15 @@ Further we plan to continue to develop the game and deal with the balancing of t
 In the future, new mechanics may be added that will make the game more interesting.
 
 # Screenshots
+<p align="center">Gameplay</p>
 <img src="./github/gameplay/base.jpeg" alt="Gameplay" />
-<center>Gameplay<center>
 <br />
+<p align="center">Shop</p>
 <img src="./github/gameplay/menu.jpeg" alt="Shop" />
-<center>Shop<center>
 <br />
+<p align="center">New chain</p>
 <img src="./github/gameplay/minimal.jpeg" alt="New chain" />
-<center>New chain<center>
 <br />
+<p align="center">Achievements</p>
 <img src="./github/gameplay/achievements.jpeg" alt="Achievements" />
-<center>Achievements<center>
 <br />
