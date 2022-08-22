@@ -1,0 +1,14 @@
+<svg width="50" height="50" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M20.202 39.3939V59.596H39.3939V39.3939H20.202Z" fill="#FF424B"/>
+<path d="M19.1919 60.6061V79.798H0V60.6061H19.1919Z" fill="#FF424B"/>
+<path d="M20.202 80.8081H39.3939V100H20.202V80.8081Z" fill="#FF424B"/>
+<path d="M40.404 60.6061V79.798H60.6061V60.6061H40.404Z" fill="#FF424B"/>
+<path d="M60.6061 60.6061V79.798H79.798V60.6061H60.6061Z" fill="#FF424B"/>
+<path d="M100 60.6061H79.798V79.798H100V60.6061Z" fill="#FF424B"/>
+<path d="M0 20.202V39.3939H20.202V20.202H0Z" fill="#FF424B" fill-opacity="0.5"/>
+<path d="M20.202 39.3939H39.3939V20.202H20.202V39.3939Z" fill="#FF424B" fill-opacity="0.5"/>
+<path d="M59.596 39.3939V20.202H39.3939V39.3939H59.596Z" fill="#FF424B" fill-opacity="0.5"/>
+<path d="M60.6061 19.1919V0H79.798V19.1919H60.6061Z" fill="#FF424B" fill-opacity="0.5"/>
+<path d="M80.8081 20.202H100V39.3939H80.8081V20.202Z" fill="#FF424B" fill-opacity="0.5"/>
+<path d="M79.798 40.404H60.6061V60.6061H79.798V40.404Z" fill="#FF424B" fill-opacity="0.5"/>
+</svg>
